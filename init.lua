@@ -1,4 +1,4 @@
-local myvim = vim.fn.stdpath "config" .. "/myvim.vim"
+-- local myvim = vim.fn.stdpath "config" .. "/myvim.vim"
 vim.cmd.source(myvim)
 
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
@@ -9,12 +9,13 @@ vim.g.loaded_netrwPlugin = 1
 vim.o.number = true
 vim.o.cursorcolumn = true
 -- disable netrw at the very start of your init.lua
--- optionally enable 24-bit colour
+--  optionally enable 24-bit colour
 vim.opt.termguicolors = true
 vim.opt.nu = true
 vim.opt.relativenumber = true
 vim.o.statuscolumn = "%s %l %r "
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.opt.laststatus = 3
 
 -- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
@@ -149,16 +150,39 @@ require("auto-session").setup {}
 require("cmp").setup {
     sources = {
         { name = "nvim_lsp" },
+        { name = 'render-markdown' },
     },
 }
 
 require("telescope").setup {}
+
+-- deps:
+require('img-clip').setup({
+    -- use recommended settings from above
+})
+require('render-markdown').setup({
+    -- use recommended settings from above
+})
+require('copilot').setup({
+    -- use recommended settings from above
+})
+require('avante_lib').load()
+require('avante').setup({
+    opts = {
+        gemini = {
+            generationConfig = {
+                stopSequences = { "test" },
+            }
+        }
+    }
+})
 
 local builtin = require "telescope.builtin"
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
 vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
+vim.keymap.set("n", "<leader>ft", builtin.lsp_document_symbols, { desc = "Telescope current buffer tags" })
 
 vim.schedule(function()
     require "mappings"
