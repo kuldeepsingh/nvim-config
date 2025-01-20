@@ -159,6 +159,7 @@ require('render-markdown').setup({})
 require('copilot').setup({})
 require('avante_lib').load()
 require('avante').setup({})
+--[[
 require('ufo').setup({
     provider_selector = function(bufnr, filetype, buftype)
         return { 'lsp', 'indent' }
@@ -166,9 +167,10 @@ require('ufo').setup({
 })
 
 vim.keymap.set("n", "-", "<cmd>foldclose<CR>", { desc = "close the folder" })
-vim.keymap.set("n", "+", "<cmd>foldclose<CR>", { desc = "close the folder" })
---vim.keymap.set("n", "zR", require('ufo').openAllFolds { desc = "open all folds" })
---vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds" })
+vim.keymap.set("n", "+", "<cmd>foldopen<CR>", { desc = "Open the folder" })
+vim.keymap.set("n", "zR", require('ufo').openAllFolds { desc = "open all folds" })
+vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds" })
+]] --
 
 local builtin = require "telescope.builtin"
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })

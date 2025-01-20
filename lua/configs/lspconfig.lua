@@ -11,6 +11,7 @@ lspconfig.servers = {
     "lua_ls",
     "clangd",
     "pyright",
+    "asm-lsp"
 }
 
 -- list of servers configured with default config.
@@ -58,5 +59,9 @@ lspconfig.clangd.setup {
         on_attach(client, bufnr)
     end,
     on_init = on_init,
+    capabilities = capabilities,
+}
+
+lspconfig.asm_lsp.setup {
     capabilities = capabilities,
 }
