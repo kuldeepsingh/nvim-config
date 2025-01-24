@@ -17,7 +17,7 @@ vim.o.statuscolumn = "%s %l %r "
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.opt.laststatus = 3
 
-vim.o.foldcolumn = '1'
+vim.o.foldcolumn = "1"
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 1
 vim.o.foldenable = true
@@ -148,17 +148,17 @@ require("auto-session").setup {}
 require("cmp").setup {
     sources = {
         { name = "nvim_lsp" },
-        { name = 'render-markdown' },
+        { name = "render-markdown" },
     },
 }
 
 require("telescope").setup {}
 
-require('img-clip').setup({})
-require('render-markdown').setup({})
-require('copilot').setup({})
-require('avante_lib').load()
-require('avante').setup({})
+require("img-clip").setup {}
+require("render-markdown").setup {}
+require("copilot").setup {}
+require("avante_lib").load()
+require("avante").setup {}
 --[[
 require('ufo').setup({
     provider_selector = function(bufnr, filetype, buftype)
@@ -170,7 +170,8 @@ vim.keymap.set("n", "-", "<cmd>foldclose<CR>", { desc = "close the folder" })
 vim.keymap.set("n", "+", "<cmd>foldopen<CR>", { desc = "Open the folder" })
 vim.keymap.set("n", "zR", require('ufo').openAllFolds { desc = "open all folds" })
 vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds" })
-]] --
+]]
+--
 
 local builtin = require "telescope.builtin"
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
@@ -190,8 +191,8 @@ local function my_on_attach(bufnr)
     api.config.mappings.default_on_attach(bufnr)
 
     -- custom mappings
-    vim.keymap.set("n", "<leader>e", api.tree.toggle, opts('Toggle Explorer'))
-    vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
+    vim.keymap.set("n", "<leader>e", api.tree.toggle, opts "Toggle Explorer")
+    vim.keymap.set("n", "?", api.tree.toggle_help, opts "Help")
 end
 
 -- pass to setup along with your other options
@@ -201,16 +202,25 @@ require("nvim-tree").setup {
     ---
 }
 
-require("dap-python").setup("/Users/kuldeepsingh/.virtualenvs/debugpy/bin/python")
+require("dap-python").setup "/Users/kuldeepsingh/.virtualenvs/debugpy/bin/python"
 
 -- nvim dap mappings
-vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
-vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
-vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
-vim.keymap.set('n', '<F12>', function() require('dap').step_out() end)
-vim.keymap.set('n', '<C-b>', function() require('dap').toggle_breakpoint() end)
+vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<CR>", { desc = "Toggle the break point" })
+vim.keymap.set("n", "<F2>", require("dap").toggle_breakpoint)
 
-local dap, dapui = require("dap"), require("dapui")
+vim.keymap.set("n", "<leader>dr", "<cmd>DapContinue<CR>", { desc = "run or continue the debugger" })
+vim.keymap.set("n", "<F5>", require("dap").continue)
+
+vim.keymap.set("n", "<leader>dn", require("dap").step_over)
+vim.keymap.set("n", "<F7>", require("dap").step_over)
+
+vim.keymap.set("n", "<leader>di", require("dap").step_into)
+vim.keymap.set("n", "<F8>", require("dap").step_into)
+
+vim.keymap.set("n", "<leader>do", require("dap").step_out)
+vim.keymap.set("n", "<F9>", require("dap").step_out)
+
+local dap, dapui = require "dap", require "dapui"
 dapui.setup()
 
 -- open Dap UI automatically when debug starts (e.g. after <F5>)
@@ -227,8 +237,26 @@ vim.api.nvim_create_user_command("DapCloseUI", function()
 end, {})
 
 -- use <CTRL-e> to eval expressions
-vim.keymap.set({ 'n', 'v' }, '<C-e>', function() require('dapui').eval() end)
+vim.keymap.set({ "n", "v" }, "<C-e>", function()
+    require("dapui").eval()
+end)
 
+local dap = require "dap"
+dap.configurations.cpp = {
+    {
+        name = "Launch file",
+        type = "codelldb",
+        request = "launch",
+        program = function()
+            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+        end,
+        cwd = "${workspaceFolder}",
+        stopOnEntry = false,
+    },
+}
+
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
 
 vim.schedule(function()
     require "mappings"

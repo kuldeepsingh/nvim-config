@@ -8,6 +8,14 @@ return {
     },
 
     {
+        "jose-elias-alvarez/null-ls.nvim",
+        event = "VeryLazy",
+        opts = function()
+            return require "configs.null-ls"
+        end,
+    },
+
+    {
         "neovim/nvim-lspconfig",
         event = { "BufReadPre", "BufNewFile" },
         config = function()
@@ -63,8 +71,8 @@ return {
         "dhananjaylatkar/cscope_maps.nvim",
         dependencies = {
             "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
-            "ibhagwan/fzf-lua",              -- optional [for picker="fzf-lua"]
-            "echasnovski/mini.pick",         -- optional [for picker="mini-pick"]
+            "ibhagwan/fzf-lua", -- optional [for picker="fzf-lua"]
+            "echasnovski/mini.pick", -- optional [for picker="mini-pick"]
         },
         opts = {},
     },
@@ -101,8 +109,8 @@ return {
     },
 
     {
-        'MeanderingProgrammer/render-markdown.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
+        "MeanderingProgrammer/render-markdown.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" },
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
         opts = {},
@@ -114,7 +122,7 @@ return {
         cmd = "Copilot",
         event = "InsertEnter",
         config = function()
-            require("copilot").setup({})
+            require("copilot").setup {}
         end,
     },
 
@@ -132,9 +140,9 @@ return {
             "nvim-lua/plenary.nvim",
             "MunifTanjim/nui.nvim",
             --- The below dependencies are optional,
-            "hrsh7th/nvim-cmp",            -- autocompletion for avante commands and mentions
+            "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
             "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-            "zbirenbaum/copilot.lua",      -- for providers='copilot'
+            "zbirenbaum/copilot.lua", -- for providers='copilot'
             {
                 -- support for image pasting
                 "HakonHarnes/img-clip.nvim",
@@ -154,11 +162,22 @@ return {
             },
             {
                 -- Make sure to set this up properly if you have lazy=true
-                'MeanderingProgrammer/render-markdown.nvim',
+                "MeanderingProgrammer/render-markdown.nvim",
                 opts = {
                     file_types = { "markdown", "Avante" },
                 },
                 ft = { "markdown", "Avante" },
+            },
+        },
+    },
+
+    {
+        "williamboman/mason.nvim",
+        opts = {
+            ensure_installed = {
+                "clangd",
+                "clang-format",
+                "codelldb",
             },
         },
     },
@@ -196,57 +215,36 @@ return {
                 end,
             }
 
-            -- Handled by nvim-dap-go
-            -- dap.adapters.go = {
-            --   type = "server",
-            --   port = "${port}",
-            --   executable = {
-            --     command = "dlv",
-            --     args = { "dap", "-l", "127.0.0.1:${port}" },
-            --   },
-            -- }
+            --Handled by nvim-dap-go
+            dap.adapters.go = {
+                type = "server",
+                port = "17500",
+                executable = {
+                    command = "dlv",
+                    args = { "dap", "-l", "127.0.0.1:${port}" },
+                },
+            }
 
-            --[[
-			vim.keymap.set("n", "<space>b", dap.toggle_breakpoint)
-			vim.keymap.set("n", "<space>gb", dap.run_to_cursor)
+            dap.adapters.codelldb = {
+                name = "lldb server",
+                type = "server",
+                port = "${port}",
+                executable = {
+                    command = "/Users/kuldeepsingh/.local/share/nvim/mason/bin/codelldb",
+                    args = { "--port", "${port}" },
+                },
+            }
 
-			-- Eval var under cursor
-			vim.keymap.set("n", "<space>?", function()
-				require("dapui").eval(nil, { enter = true })
-			end)
-
-			vim.keymap.set("n", "<F1>", dap.continue)
-			vim.keymap.set("n", "<F2>", dap.step_into)
-			vim.keymap.set("n", "<F3>", dap.step_over)
-			vim.keymap.set("n", "<F4>", dap.step_out)
-			vim.keymap.set("n", "<F5>", dap.step_back)
-			vim.keymap.set("n", "<F13>", dap.restart)
-
-			dap.listeners.before.attach.dapui_config = function()
-				ui.open()
-			end
-			dap.listeners.before.launch.dapui_config = function()
-				ui.open()
-			end
-			dap.listeners.before.event_terminated.dapui_config = function()
-				ui.close()
-			end
-			dap.listeners.before.event_exited.dapui_config = function()
-				ui.close()
-			end
-            ]] --
         end,
     },
 
     {
-        'mfussenegger/nvim-dap-python',
+        "mfussenegger/nvim-dap-python",
         dependencies = {
-            'mfussenegger/nvim-dap',
-            'rcarriga/nvim-dap-ui',
+            "mfussenegger/nvim-dap",
+            "rcarriga/nvim-dap-ui",
         },
-        ft = { 'python' },
-        config = function()
-        end
+        ft = { "python" },
+        config = function() end,
     },
-
 }
