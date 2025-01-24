@@ -12,7 +12,7 @@ vim.o.cursorcolumn = true
 --  optionally enable 24-bit colour
 vim.opt.termguicolors = true
 vim.opt.nu = true
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 vim.o.statuscolumn = "%s %l %r "
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.opt.laststatus = 3
@@ -178,6 +178,28 @@ vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live gr
 vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
 vim.keymap.set("n", "<leader>ft", builtin.lsp_document_symbols, { desc = "Telescope current buffer tags" })
+
+local function my_on_attach(bufnr)
+    local api = require "nvim-tree.api"
+
+    local function opts(desc)
+        return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    end
+
+    -- default mappings
+    api.config.mappings.default_on_attach(bufnr)
+
+    -- custom mappings
+    vim.keymap.set("n", "<leader>e", api.tree.toggle, opts('Toggle Explorer'))
+    vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
+end
+
+-- pass to setup along with your other options
+require("nvim-tree").setup {
+    ---
+    on_attach = my_on_attach,
+    ---
+}
 
 vim.schedule(function()
     require "mappings"
