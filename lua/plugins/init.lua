@@ -66,10 +66,7 @@ return {
             "ibhagwan/fzf-lua",              -- optional [for picker="fzf-lua"]
             "echasnovski/mini.pick",         -- optional [for picker="mini-pick"]
         },
-        opts = {
-            -- USE EMPTY FOR DEFAULT OPTIONS
-            -- DEFAULTS ARE LISTED BELOW
-        },
+        opts = {},
     },
 
     {
@@ -96,10 +93,7 @@ return {
     {
         "HakonHarnes/img-clip.nvim",
         event = "VeryLazy",
-        opts = {
-            -- add options here
-            -- or leave it empty to use the default settings
-        },
+        opts = {},
         keys = {
             -- suggested keymap
             { "<leader>p", "<cmd>PasteImage<cr>", desc = "Paste image from system clipboard" },
@@ -108,9 +102,7 @@ return {
 
     {
         'MeanderingProgrammer/render-markdown.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
         opts = {},
@@ -170,22 +162,4 @@ return {
             },
         },
     },
-
---[[
-    {
-        "kevinhwang91/nvim-ufo",
-        dependencies = {
-            { "kevinhwang91/promise-async" },
-        },
-    },
-]]--
-    --    {
-    --     	"nvim-treesitter/nvim-treesitter",
-    --    	opts = {
-    --     		ensure_installed = {
-    --     			"vim", "lua", "vimdoc",
-    --          "html", "css"
-    --     		},
-    --     	},
-    --    },
 }
