@@ -258,6 +258,9 @@ dap.configurations.cpp = {
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
+require("symbols-outline").setup()
+vim.keymap.set("n", "<leader>ss", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
+
 vim.schedule(function()
     require "mappings"
 end)

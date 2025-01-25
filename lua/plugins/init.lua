@@ -234,7 +234,6 @@ return {
                     args = { "--port", "${port}" },
                 },
             }
-
         end,
     },
 
@@ -246,5 +245,8 @@ return {
         },
         ft = { "python" },
         config = function() end,
+    },
+    {
+        "simrat39/symbols-outline.nvim",
     },
 }
