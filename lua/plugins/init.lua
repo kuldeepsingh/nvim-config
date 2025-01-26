@@ -236,7 +236,6 @@ return {
             }
         end,
     },
-
     {
         "mfussenegger/nvim-dap-python",
         dependencies = {
@@ -248,5 +247,22 @@ return {
     },
     {
         "simrat39/symbols-outline.nvim",
+    },
+    {
+        "folke/which-key.nvim",
+        tag = "v1.5.1",
+    },
+    { "nvimdev/lspsaga.nvim" },
+    { "akinsho/toggleterm.nvim" },
+    {
+        "mg979/vim-visual-multi",
+        -- See https://github.com/mg979/vim-visual-multi/issues/241
+        init = function()
+            vim.g.VM_default_mappings = 0
+            vim.g.VM_maps = {
+                ["Find Under"] = "",
+            }
+            vim.g.VM_add_cursor_at_pos_no_mappings = 1
+        end,
     },
 }

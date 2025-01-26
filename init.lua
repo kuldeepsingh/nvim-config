@@ -259,7 +259,12 @@ dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
 require("symbols-outline").setup()
-vim.keymap.set("n", "<leader>ss", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
+vim.keymap.set("n", "<leader>ts", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
+
+require("toggleterm").setup()
+vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
+
+vim.keymap.set("n", "<leader>tu>", vim.cmd.UndotreeToggle)
 
 vim.schedule(function()
     require "mappings"
