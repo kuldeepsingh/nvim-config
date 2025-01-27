@@ -1,5 +1,17 @@
--- local myvim = vim.fn.stdpath "config" .. "/myvim.vim"
-vim.cmd.source(myvim)
+local vim = vim
+local Plug = vim.fn["plug#"]
+
+vim.call "plug#begin"
+Plug "neovim/nvim-lspconfig"
+Plug "hrsh7th/cmp-nvim-lsp"
+Plug "hrsh7th/cmp-buffer"
+Plug "hrsh7th/cmp-path"
+Plug "hrsh7th/cmp-cmdline"
+Plug "hrsh7th/nvim-cmp"
+Plug "hrsh7th/cmp-vsnip"
+Plug "hrsh7th/vim-vsnip"
+Plug "propet/toggle-fullscreen.nvim"
+vim.call "plug#end"
 
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
@@ -284,6 +296,7 @@ require("noice").setup {
         lsp_doc_border = false, -- add a border to hover docs and signature help
     },
 }
+vim.keymap.set("n", "<leader>az", "<Cmd>lua require('toggle-fullscreen'):toggle_fullscreen()<CR>")
 
 vim.schedule(function()
     require "mappings"

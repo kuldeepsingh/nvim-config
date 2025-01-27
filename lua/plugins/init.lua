@@ -287,4 +287,7 @@ return {
             require("gentags").setup()
         end,
     },
+    {
+        "propet/toggle-fullscreen.nvim",
+    },
 }
