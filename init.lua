@@ -304,7 +304,9 @@ vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds
             lsp_doc_border = false, -- add a border to hover docs and signature help
         },
     }
-    vim.keymap.set("n", "<leader>az", "<Cmd>lua require('toggle-fullscreen'):toggle_fullscreen()<CR>")
+    vim.keymap.set("n", "<leader>cq", function()
+        require("tiny-code-action").code_action()
+    end, { noremap = true, silent = true })
 
     vim.schedule(function()
         require "mappings"

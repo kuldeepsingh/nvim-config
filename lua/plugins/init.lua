@@ -298,6 +298,35 @@ return {
         end,
     },
     {
-        "propet/toggle-fullscreen.nvim",
+        "rachartier/tiny-code-action.nvim",
+        dependencies = {
+            { "nvim-lua/plenary.nvim" },
+            { "nvim-telescope/telescope.nvim" },
+        },
+        event = "LspAttach",
+        config = function()
+            require("tiny-code-action").setup()
+        end,
+    },
+    {
+        "zk-org/zk-nvim",
+        config = function()
+            require("zk").setup {
+                -- See Setup section below
+            }
+        end,
+    },
+    {
+        "leath-dub/snipe.nvim",
+        keys = {
+            {
+                "gb",
+                function()
+                    require("snipe").open_buffer_menu()
+                end,
+                desc = "Open Snipe buffer menu",
+            },
+        },
+        opts = {},
     },
 }
