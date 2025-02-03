@@ -6,6 +6,9 @@ else
     local vim = vim
     local Plug = vim.fn["plug#"]
 
+    ------------------------------------------------
+    --- LSP install
+    ------------------------------------------------
     vim.call "plug#begin"
     Plug "neovim/nvim-lspconfig"
     Plug "hrsh7th/cmp-nvim-lsp"
@@ -15,7 +18,6 @@ else
     Plug "hrsh7th/nvim-cmp"
     Plug "hrsh7th/cmp-vsnip"
     Plug "hrsh7th/vim-vsnip"
-    Plug "propet/toggle-fullscreen.nvim"
     vim.call "plug#end"
 
     vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
@@ -39,7 +41,9 @@ else
     vim.o.foldlevelstart = 1
     vim.o.foldenable = true
 
+    ---------------------------------------------------------------
     -- bootstrap lazy and all plugins
+    ---------------------------------------------------------------
     local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
     if not vim.uv.fs_stat(lazypath) then
@@ -63,7 +67,9 @@ else
         { import = "plugins" },
     }, lazy_config)
 
+    ---------------------------------------------------------------
     -- Set up nvim-cmp.
+    ---------------------------------------------------------------
     local cmp = require "cmp"
     cmp.setup {
         snippet = {
@@ -123,38 +129,18 @@ else
         },
     }
 
+    ---------------------------------------------------------------
     -- load theme
+    ---------------------------------------------------------------
     dofile(vim.g.base46_cache .. "defaults")
     dofile(vim.g.base46_cache .. "statusline")
 
     require "options"
     require "nvchad.autocmds"
 
-    require("nvim-tree").setup {
-        hijack_netrw = true,
-        hijack_cursor = true,
-        update_cwd = false,
-        actions = {
-            open_file = {
-                quit_on_open = true,
-            },
-            change_dir = {
-                enable = false,
-                global = false,
-            },
-        },
-        update_focused_file = {
-            enable = true,
-            update_cwd = false,
-            ignore_list = {},
-        },
-        git = {
-            enable = true,
-            ignore = false,
-            timeout = 500,
-        },
-    }
-
+    ---------------------------------------------------
+    --- Cscope map : Still needs to be configured
+    ----------------------------------------------------
     require("cscope_maps").setup {
         cscope = {
             -- location of cscope db file
@@ -162,6 +148,9 @@ else
         },
     }
 
+    ----------------------------------------------------
+    ---Save and restore the sessions
+    ----------------------------------------------------
     require("auto-session").setup {}
 
     require("cmp").setup {
@@ -171,27 +160,10 @@ else
         },
     }
 
+    ---------------------------------------------------
+    -- Telescope config
+    ----------------------------------------------------
     require("telescope").setup {}
-
-    require("img-clip").setup {}
-    require("render-markdown").setup {}
-    require("copilot").setup {}
-    require("avante_lib").load()
-    require("avante").setup {}
-    --[[
-require('ufo').setup({
-    provider_selector = function(bufnr, filetype, buftype)
-        return { 'lsp', 'indent' }
-    end
-})
-
-vim.keymap.set("n", "-", "<cmd>foldclose<CR>", { desc = "close the folder" })
-vim.keymap.set("n", "+", "<cmd>foldopen<CR>", { desc = "Open the folder" })
-vim.keymap.set("n", "zR", require('ufo').openAllFolds { desc = "open all folds" })
-vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds" })
-]]
-    --
-
     local builtin = require "telescope.builtin"
     vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
     vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
@@ -200,6 +172,19 @@ vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds
     vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
     vim.keymap.set("n", "<leader>ft", builtin.lsp_document_symbols, { desc = "Telescope current buffer tags" })
 
+    require("img-clip").setup {}
+    require("render-markdown").setup {}
+
+    ---------------------------------------------------
+    -- AI setup
+    ----------------------------------------------------
+    require("copilot").setup {}
+    require("avante_lib").load()
+    require("avante").setup {}
+
+    ---------------------------------------------------
+    -- nvim-tree Setup
+    ----------------------------------------------------
     local function my_on_attach(bufnr)
         local api = require "nvim-tree.api"
 
@@ -222,6 +207,9 @@ vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds
         ---
     }
 
+    ----------------------------------------------------
+    --- Debugging setup for Python
+    ----------------------------------------------------
     require("dap-python").setup "/Users/kuldeepsingh/.virtualenvs/debugpy/bin/python"
 
     -- nvim dap mappings
@@ -278,14 +266,26 @@ vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds
     dap.configurations.c = dap.configurations.cpp
     dap.configurations.rust = dap.configurations.cpp
 
+    ----------------------------------------------------
+    --- Symbol outline
+    ----------------------------------------------------
     require("symbols-outline").setup()
     vim.keymap.set("n", "<leader>ts", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
 
+    ----------------------------------------------------
+    --- Terminal App
+    ----------------------------------------------------
     require("toggleterm").setup()
     vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
 
+    ----------------------------------------------------
+    --- Undo Tree
+    ----------------------------------------------------
     vim.keymap.set("n", "<leader>tu>", vim.cmd.UndotreeToggle)
 
+    ----------------------------------------------------
+    --- Noice notices
+    ----------------------------------------------------
     require("noice").setup {
         lsp = {
             -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -304,6 +304,7 @@ vim.keymap.set("n", "zM", require('ufo').closeAllFolds { desc = "close all folds
             lsp_doc_border = false, -- add a border to hover docs and signature help
         },
     }
+
     vim.keymap.set("n", "<leader>cq", function()
         require("tiny-code-action").code_action()
     end, { noremap = true, silent = true })

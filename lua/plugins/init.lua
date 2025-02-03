@@ -76,6 +76,7 @@ return {
         },
         opts = {},
     },
+
     {
         "ludovicchabant/vim-gutentags",
         init = function()
@@ -246,6 +247,7 @@ return {
             }
         end,
     },
+
     {
         "mfussenegger/nvim-dap-python",
         dependencies = {
@@ -255,9 +257,11 @@ return {
         ft = { "python" },
         config = function() end,
     },
+
     {
         "simrat39/symbols-outline.nvim",
     },
+
     {
         "folke/which-key.nvim",
         event = "VeryLazy",
@@ -276,8 +280,15 @@ return {
             },
         },
     },
-    { "nvimdev/lspsaga.nvim" },
-    { "akinsho/toggleterm.nvim" },
+
+    {
+        "nvimdev/lspsaga.nvim",
+    },
+
+    {
+        "akinsho/toggleterm.nvim",
+    },
+
     {
         "mg979/vim-visual-multi",
         -- See https://github.com/mg979/vim-visual-multi/issues/241
@@ -289,7 +300,7 @@ return {
             vim.g.VM_add_cursor_at_pos_no_mappings = 1
         end,
     },
-    -- lazy.nvim
+
     {
         "folke/noice.nvim",
         event = "VeryLazy",
@@ -305,12 +316,14 @@ return {
             "rcarriga/nvim-notify",
         },
     },
+
     {
         "linrongbin16/gentags.nvim",
         config = function()
             require("gentags").setup()
         end,
     },
+
     {
         "rachartier/tiny-code-action.nvim",
         dependencies = {
@@ -322,6 +335,7 @@ return {
             require("tiny-code-action").setup()
         end,
     },
+
     {
         "zk-org/zk-nvim",
         config = function()
@@ -330,6 +344,7 @@ return {
             }
         end,
     },
+
     {
         "leath-dub/snipe.nvim",
         keys = {
@@ -342,5 +357,12 @@ return {
             },
         },
         opts = {},
+    },
+
+    {
+        "nvim-neorg/neorg",
+        lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+        version = "*", -- Pin Neorg to the latest stable release
+        config = true,
     },
 }
