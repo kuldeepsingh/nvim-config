@@ -195,7 +195,7 @@ else
         -- default mappings
         api.config.mappings.default_on_attach(bufnr)
 
-        -- custom mappings
+        -- custom mappings. CTRL+n is also mapped to the same key by default
         vim.keymap.set("n", "<leader>e", api.tree.toggle, opts "Toggle Explorer")
         vim.keymap.set("n", "?", api.tree.toggle_help, opts "Help")
     end
@@ -217,16 +217,16 @@ else
     vim.keymap.set("n", "<F2>", require("dap").toggle_breakpoint)
 
     vim.keymap.set("n", "<leader>dr", "<cmd>DapContinue<CR>", { desc = "run or continue the debugger" })
-    vim.keymap.set("n", "<F5>", require("dap").continue)
+    vim.keymap.set("n", "<F5>", require("dap").continue, { desc = "run or continue the debugger" })
 
-    vim.keymap.set("n", "<leader>dn", require("dap").step_over)
-    vim.keymap.set("n", "<F7>", require("dap").step_over)
+    vim.keymap.set("n", "<leader>dn", require("dap").step_over, { desc = "Step Over" })
+    vim.keymap.set("n", "<F7>", require("dap").step_over, { desc = "Step Over" })
 
-    vim.keymap.set("n", "<leader>di", require("dap").step_into)
-    vim.keymap.set("n", "<F8>", require("dap").step_into)
+    vim.keymap.set("n", "<leader>di", require("dap").step_into, { desc = "Step into" })
+    vim.keymap.set("n", "<F8>", require("dap").step_into, { desc = "Step into" })
 
-    vim.keymap.set("n", "<leader>do", require("dap").step_out)
-    vim.keymap.set("n", "<F9>", require("dap").step_out)
+    vim.keymap.set("n", "<leader>do", require("dap").step_out, { desc = "Step out" })
+    vim.keymap.set("n", "<F9>", require("dap").step_out, { desc = "Step out" })
 
     local dap, dapui = require "dap", require "dapui"
     dapui.setup()
@@ -273,15 +273,16 @@ else
     vim.keymap.set("n", "<leader>ts", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
 
     ----------------------------------------------------
-    --- Terminal App
+    --Terminal App
     ----------------------------------------------------
     require("toggleterm").setup()
     vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
+    vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
     ----------------------------------------------------
     --- Undo Tree
     ----------------------------------------------------
-    vim.keymap.set("n", "<leader>tu>", vim.cmd.UndotreeToggle)
+    vim.keymap.set("n", "<leader>tu>", vim.cmd.UndotreeToggle, { desc = "Display the undo tree" })
 
     ----------------------------------------------------
     --- Noice notices

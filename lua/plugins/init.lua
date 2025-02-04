@@ -365,4 +365,85 @@ return {
         version = "*", -- Pin Neorg to the latest stable release
         config = true,
     },
+
+    {
+        "isakbm/gitgraph.nvim",
+        opts = {
+            symbols = {
+                merge_commit = "M",
+                commit = "*",
+            },
+            format = {
+                timestamp = "%H:%M:%S %d-%m-%Y",
+                fields = { "hash", "timestamp", "author", "branch_name", "tag" },
+            },
+            hooks = {
+                on_select_commit = function(commit)
+                    print("selected commit:", commit.hash)
+                end,
+                on_select_range_commit = function(from, to)
+                    print("selected range:", from.hash, to.hash)
+                end,
+            },
+        },
+        keys = {
+            {
+                "<leader>gl",
+                function()
+                    require("gitgraph").draw({}, { all = true, max_count = 5000 })
+                end,
+                desc = "GitGraph - Draw",
+            },
+        },
+    },
+    {
+        "isakbm/gitgraph.nvim",
+        dependencies = { "sindrets/diffview.nvim" },
+        ---@type I.GGConfig
+        opts = {
+            hooks = {
+                -- Check diff of a commit
+                on_select_commit = function(commit)
+                    vim.notify("DiffviewOpen " .. commit.hash .. "^!")
+                    vim.cmd(":DiffviewOpen " .. commit.hash .. "^!")
+                end,
+                -- Check diff from commit a -> commit b
+                on_select_range_commit = function(from, to)
+                    vim.notify("DiffviewOpen " .. from.hash .. "~1.." .. to.hash)
+                    vim.cmd(":DiffviewOpen " .. from.hash .. "~1.." .. to.hash)
+                end,
+            },
+        },
+    },
+    {
+        "krisajenkins/telescope-docker.nvim",
+        event = "VeryLazy",
+        dependencies = {
+            "nvim-telescope/telescope.nvim",
+        },
+        config = function()
+            require("telescope").load_extension "telescope_docker"
+            require("telescope_docker").setup {}
+        end,
+
+        -- Example keybindings. Adjust these to suit your preferences or remove
+        --   them entirely:
+        keys = {
+            {
+                "<Leader>dlv",
+                ":Telescope telescope_docker docker_volumes<CR>",
+                desc = "[D]ocker [V]olumes",
+            },
+            {
+                "<Leader>dls",
+                ":Telescope telescope_docker docker_images<CR>",
+                desc = "[D]ocker [I]mages",
+            },
+            {
+                "<Leader>dlp",
+                ":Telescope telescope_docker docker_ps<CR>",
+                desc = "[D]ocker [P]rocesses",
+            },
+        },
+    },
 }
