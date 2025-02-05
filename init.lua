@@ -25,21 +25,32 @@ else
 
     vim.g.loaded_netrw = 1
     vim.g.loaded_netrwPlugin = 1
-    vim.o.number = true
-    vim.o.cursorcolumn = true
+    vim.opt.number = true
+    vim.opt.cursorcolumn = true
     -- disable netrw at the very start of your init.lua
     --  optionally enable 24-bit colour
     vim.opt.termguicolors = true
     vim.opt.nu = true
-    vim.opt.relativenumber = false
-    vim.o.statuscolumn = "%s %l %r "
-    vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+    vim.opt.relativenumber = true
+    vim.opt.statuscolumn = "%s %l %r "
+    vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
     vim.opt.laststatus = 3
+    vim.opt.clipboard = "unnamedplus"
 
-    vim.o.foldcolumn = "1"
-    vim.o.foldlevel = 99
-    vim.o.foldlevelstart = 1
-    vim.o.foldenable = true
+    vim.opt.foldcolumn = "1"
+    vim.opt.foldlevel = 99
+    vim.opt.foldlevelstart = 1
+    vim.opt.foldenable = true
+    vim.opt.shiftwidth = 4
+    --vim.env.CXX = "clang++ -g -O3 -std=c++11"
+
+    vim.api.nvim_create_autocmd("TextYankPost", {
+        desc = "Highlight when yanking (copying) text",
+        group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
+        callback = function()
+            vim.highlight.on_yank()
+        end,
+    })
 
     ---------------------------------------------------------------
     -- bootstrap lazy and all plugins
@@ -195,8 +206,7 @@ else
         -- default mappings
         api.config.mappings.default_on_attach(bufnr)
 
-        -- custom mappings. CTRL+n is also mapped to the same key by default
-        vim.keymap.set("n", "<leader>e", api.tree.toggle, opts "Toggle Explorer")
+        --  CTRL+n is mapped
         vim.keymap.set("n", "?", api.tree.toggle_help, opts "Help")
     end
 
@@ -245,7 +255,7 @@ else
     end, {})
 
     -- use <CTRL-e> to eval expressions
-    vim.keymap.set({ "n", "v" }, "<C-e>", function()
+    vim.keymap.set({ "n", "v" }, "<leader>de", function()
         require("dapui").eval()
     end)
 
@@ -309,6 +319,30 @@ else
     vim.keymap.set("n", "<leader>cq", function()
         require("tiny-code-action").code_action()
     end, { noremap = true, silent = true })
+
+    -- require("neorg").setup {
+    --     load = {
+    --         ["core.defaults"] = {},
+    --         ["core.norg.concealer"] = {
+    --             config = {
+    --                 folds = false,
+    --             },
+    --         },
+    --         ["core.norg.dirman"] = {
+    --             config = {
+    --                 workspaces = { notes = "~/.data/neorg" },
+    --                 default_workspace = "notes",
+    --             },
+    --             index = "index.norg",
+    --         },
+    --         ["core.norg.completion"] = {
+    --             config = {
+    --                 engine = "nvim-cmp",
+    --             },
+    --         },
+    --         ["core.export"] = {},
+    --     },
+    -- }
 
     vim.schedule(function()
         require "mappings"
