@@ -73,6 +73,7 @@ return {
         dependencies = {
             "nvim-lua/plenary.nvim",
             { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+            { "nvim-telescope/telescope-live-grep-args.nvim", version = "^1.0.0" },
         },
         config = function()
             require("telescope").setup {
@@ -87,6 +88,7 @@ return {
             }
 
             require("telescope").load_extension "fzf"
+            require("telescope").load_extension "live_grep_args"
 
             vim.keymap.set("n", "<space>fh", require("telescope.builtin").help_tags)
             vim.keymap.set("n", "<space>fd", require("telescope.builtin").find_files)
@@ -513,5 +515,40 @@ return {
                 desc = "[D]ocker [P]rocesses",
             },
         },
+    },
+
+    {
+        "karb94/neoscroll.nvim",
+        opts = {},
+    },
+
+    {
+        "Xuyuanp/scrollbar.nvim",
+        -- no setup required
+        init = function()
+            local group_id = vim.api.nvim_create_augroup("scrollbar_init", { clear = true })
+
+            vim.api.nvim_create_autocmd({ "BufEnter", "WinScrolled", "WinResized" }, {
+                group = group_id,
+                desc = "Show or refresh scrollbar",
+                pattern = { "*" },
+                callback = function()
+                    require("scrollbar").show()
+                end,
+            })
+        end,
+    },
+
+    {
+        "sindrets/diffview.nvim",
+    },
+
+    {
+        "RRethy/vim-illuminate",
+    },
+
+    {
+        "m4xshen/smartcolumn.nvim",
+        opts = {},
     },
 }
