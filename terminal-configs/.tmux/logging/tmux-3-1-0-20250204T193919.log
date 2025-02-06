@@ -1,0 +1,33 @@
+❯ 
+❯    ~/notes    main !2   ✔  19:39:22  >                                                                                           
+❯    ~/notes    main !2   ✔  19:39:22  >                                                                                           
+❯ ls -lrth ~/notes    main !2   ✔  19:39:22  lllslsls ls -lrth-lrth>                                                                     
+kls\total 0
+drwxr-xr-x@ 2 kuldeepsingh  staff    64B Jan 31 11:34 standup
+drwxr-xr-x@ 4 kuldeepsingh  staff   128B Feb  3 18:18 daily
+drwxr-xr-x@ 5 kuldeepsingh  staff   160B Feb  4 19:39 ideas
+❯ ls p  ~/notes    main !2   ✔  19:39:24  llls -lrthlsls ls p   >                                                                     
+kls\ls: p: No such file or directory
+❯    ~/notes    main !2   1 ✘  19:39:58  >                                                                                         
+❯ ls -lrth ~/notes    main !2   1 ✘  19:39:58  llls plsls ls -lrthlrth>                                                                  
+kls\total 0
+drwxr-xr-x@ 2 kuldeepsingh  staff    64B Jan 31 11:34 standup
+drwxr-xr-x@ 4 kuldeepsingh  staff   128B Feb  3 18:18 daily
+drwxr-xr-x@ 5 kuldeepsingh  staff   160B Feb  4 19:39 ideas
+❯    ~/notes    main !2   ✔  19:40:01  >                                                                                           
+❯    ~/notes    main !2   ✔  19:40:11  >                                                                                           
+❯    ~/notes    main !2   ✔  19:40:11  >                                                                                           
+❯    ~/notes    main !2   ✔  19:40:11  >                                                                                           
+❯ ll��  ~/notes    main !2   ✔  19:40:11  llls -lrthll     >                                                                          
+kll\Permissions Size User         Group Date Modified Name
+drwxr-xr-x@    - kuldeepsingh staff  3 Feb 18:18  daily
+drwxr-xr-x@    - kuldeepsingh staff  4 Feb 19:39  ideas
+drwxr-xr-x@    - kuldeepsingh staff 31 Jan 11:34  standup
+❯    ~/notes    main !2   ✔  19:40:12  >                                                                                           
+❯ cd ideas ~/notes    main !2   ✔  19:40:52  llllls -lrthls ls      -lrthl      ll cccd ..cdcdcd cd   ..c   ccd ..    cccd ..cdcdcd cd iiterm2id   easdeeas/s>
+❯ ls��  ~/notes/ideas    main !2   ✔  19:40:59  llls -lrthls     >                                                                        
+kls\ideas-2025-01-31.md nvim-keys.md        zshrc.md
+❯    ~/notes/ideas    main !2   ✔  19:40:59  >                                                                                     
+❯    ~/notes/ideas    main !2   ✔  19:41:11  >                                                                                     
+❯    ~/notes/ideas    main !2   ✔  19:41:12  >                                                                                     
+    ~/notes/ideas    main !2   ✔  19:41:12                                                                                        
