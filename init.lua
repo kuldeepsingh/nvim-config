@@ -286,11 +286,6 @@ else
     vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
     ----------------------------------------------------
-    --- Undo Tree
-    ----------------------------------------------------
-    vim.keymap.set("n", "<leader>tu>", vim.cmd.UndotreeToggle, { desc = "Display the undo tree" })
-
-    ----------------------------------------------------
     --- Noice notices
     ----------------------------------------------------
     require("noice").setup {
@@ -969,9 +964,20 @@ else
         },
     }
 
+    --------------------------------------------------------------
+    --- Display underline all the words appearance as under cursor
+    -------------------------------------------------------------
     require("illuminate").configure {}
 
+    ---------------------------------------------------------
+    --- Display column intellegently of column exceeds 80 char
+    ---------------------------------------------------------
     require("smartcolumn").setup()
+
+    ---------------------------------------------------
+    --- Display the key pressed on top right corner
+    ---------------------------------------------------
+    require("showkeys").open()
 
     vim.schedule(function()
         require "mappings"

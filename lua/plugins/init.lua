@@ -581,6 +581,7 @@ return {
         "m4xshen/smartcolumn.nvim",
         opts = {},
     },
+
     {
         "nvimdev/dashboard-nvim",
         event = "VimEnter",
@@ -590,5 +591,12 @@ return {
             }
         end,
         dependencies = { { "nvim-tree/nvim-web-devicons" } },
+    },
+
+    {
+        "nvzone/showkeys",
+        cmd = "ShowkeysToggle",
+        event = "VimEnter",
+        opt = { position = "top-right", show_count = true },
     },
 }
