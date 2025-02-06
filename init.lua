@@ -23,33 +23,6 @@ else
     vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
     vim.g.mapleader = " "
 
-    vim.g.loaded_netrw = 1
-    vim.g.loaded_netrwPlugin = 1
-    vim.opt.number = false
-    vim.opt.cursorcolumn = true
-    -- disable netrw at the very start of your init.lua
-    --  optionally enable 24-bit colour
-    vim.opt.termguicolors = true
-    vim.opt.relativenumber = false
-    vim.opt.statuscolumn = "%s %l %r "
-    vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
-    vim.opt.laststatus = 3
-    vim.opt.clipboard = "unnamedplus"
-
-    vim.opt.foldcolumn = "1"
-    vim.opt.foldlevel = 99
-    vim.opt.foldlevelstart = 1
-    vim.opt.foldenable = true
-    vim.opt.shiftwidth = 4
-
-    vim.api.nvim_create_autocmd("TextYankPost", {
-        desc = "Highlight when yanking (copying) text",
-        group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
-        callback = function()
-            vim.highlight.on_yank()
-        end,
-    })
-
     ---------------------------------------------------------------
     -- bootstrap lazy and all plugins
     ---------------------------------------------------------------
