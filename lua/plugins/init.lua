@@ -163,9 +163,30 @@ return {
 
     {
         "mfussenegger/nvim-lint",
-        event = { "BufReadPre", "BufNewFile" },
+        event = {
+            "BufReadPre",
+            "BufNewFile",
+        },
         config = function()
-            require "configs.lint"
+            local lint = require "lint"
+
+            lint.linters_by_ft = {
+                javascript = { "eslint_d" },
+                typescript = { "eslint_d" },
+                javascriptreact = { "eslint_d" },
+                typescriptreact = { "eslint_d" },
+                svelte = { "eslint_d" },
+                python = { "pylint" },
+            }
+
+            local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+
+            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+                group = lint_augroup,
+                callback = function()
+                    lint.try_lint()
+                end,
+            })
         end,
     },
 
@@ -198,6 +219,11 @@ return {
                     graphql = { "prettier" },
                     lua = { "stylua" },
                     python = { "isort", "black" },
+                },
+                format_on_save = {
+                    lsp_fallback = true,
+                    async = false,
+                    timeout_ms = 500,
                 },
             }
         end,
@@ -394,14 +420,36 @@ return {
 
     {
         "williamboman/mason.nvim",
-        opts = {
-            ensure_installed = {
-                "clangd",
-                "clang-format",
-                "codelldb",
-                "black",
-            },
+        dependencies = {
+            "WhoIsSethDaniel/mason-tool-installer.nvim",
         },
+        config = function()
+            local mason = require "mason"
+
+            local mason_tool_installer = require "mason-tool-installer"
+
+            -- enable mason and configure icons
+            mason.setup {
+                ui = {
+                    icons = {
+                        package_installed = "✓",
+                        package_pending = "➜",
+                        package_uninstalled = "✗",
+                    },
+                },
+            }
+
+            mason_tool_installer.setup {
+                ensure_installed = {
+                    "prettier", -- prettier formatter
+                    "stylua", -- lua formatter
+                    "isort", -- python formatter
+                    "black", -- python formatter
+                    "pylint", -- python linter
+                    "eslint_d", -- js linter
+                },
+            }
+        end,
     },
 
     {
@@ -614,6 +662,7 @@ return {
 
     {
         "isakbm/gitgraph.nvim",
+	dependencies = { "sindrets/diffview.nvim" },
         opts = {
             symbols = {
                 merge_commit = "M",
@@ -625,10 +674,14 @@ return {
             },
             hooks = {
                 on_select_commit = function(commit)
-                    print("selected commit:", commit.hash)
+                    vim.notify("DiffviewOpen " .. commit.hash .. "^!")
+                    vim.cmd(":DiffviewOpen " .. commit.hash .. "^!")
+		    print("selected commit:", commit.hash)
                 end,
                 on_select_range_commit = function(from, to)
                     print("selected range:", from.hash, to.hash)
+                    vim.notify("DiffviewOpen " .. from.hash .. "~1.." .. to.hash)
+                    vim.cmd(":DiffviewOpen " .. from.hash .. "~1.." .. to.hash)
                 end,
             },
         },
@@ -639,25 +692,6 @@ return {
                     require("gitgraph").draw({}, { all = true, max_count = 5000 })
                 end,
                 desc = "GitGraph - Draw",
-            },
-        },
-    },
-    {
-        "isakbm/gitgraph.nvim",
-        dependencies = { "sindrets/diffview.nvim" },
-        ---@type I.GGConfig
-        opts = {
-            hooks = {
-                -- Check diff of a commit
-                on_select_commit = function(commit)
-                    vim.notify("DiffviewOpen " .. commit.hash .. "^!")
-                    vim.cmd(":DiffviewOpen " .. commit.hash .. "^!")
-                end,
-                -- Check diff from commit a -> commit b
-                on_select_range_commit = function(from, to)
-                    vim.notify("DiffviewOpen " .. from.hash .. "~1.." .. to.hash)
-                    vim.cmd(":DiffviewOpen " .. from.hash .. "~1.." .. to.hash)
-                end,
             },
         },
     },
@@ -820,5 +854,24 @@ return {
 
     {
         "RubixDev/mason-update-all",
+    },
+    {
+        "kdheepak/lazygit.nvim",
+        lazy = false,
+        cmd = {
+            "LazyGit",
+            "LazyGitConfig",
+            "LazyGitCurrentFile",
+            "LazyGitFilter",
+            "LazyGitFilterCurrentFile",
+        },
+        -- optional for floating window border decoration
+        dependencies = {
+            "nvim-telescope/telescope.nvim",
+            "nvim-lua/plenary.nvim",
+        },
+        config = function()
+            require("telescope").load_extension "lazygit"
+        end,
     },
 }

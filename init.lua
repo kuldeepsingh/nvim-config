@@ -1055,6 +1055,9 @@ else
         pattern = "LspProgressStatusUpdated",
         callback = require("lualine").refresh,
     })
+
+    require("telescope").load_extension "lazygit"
+
     -- vim.schedule(function()
     -- require "mappings"
     -- end)
