@@ -9,7 +9,7 @@ vim.opt.softtabstop = 4
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-vim.opt.number = false
+vim.opt.number = true
 vim.opt.cursorcolumn = true
 -- disable netrw at the very start of your init.lua
 --  optionally enable 24-bit colour
@@ -154,3 +154,5 @@ local function show_diagnostics()
 end
 vim.keymap.set("n", "<leader>kh", hide_diagnostics)
 vim.keymap.set("n", "<leader>ks", show_diagnostics)
+
+vim.cmd [[ autocmd BufEnter * silent! lcd %:p:h ]]

@@ -16,17 +16,145 @@ return {
     },
 
     {
-        "neovim/nvim-lspconfig",
-        event = { "BufReadPre", "BufNewFile" },
+        "hrsh7th/nvim-cmp",
+        lazy = false,
+        priority = 100,
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-path",
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-nvim-lsp-signature-help",
+            "onsails/lspkind.nvim",
+            "ray-x/cmp-treesitter",
+            "L3MON4D3/LuaSnip",
+        },
+        event = "InsertEnter",
         config = function()
-            require("nvchad.configs.lspconfig").defaults()
-            require "configs.lspconfig"
+            local cmp = require "cmp"
+            local luasnip = require "luasnip"
+            cmp.setup {
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
+                formatting = {
+                    format = require("lspkind").cmp_format {
+                        mode = "symbol_text",
+                        menu = {
+                            nvim_lsp = "[LSP]",
+                            buffer = "[Buffer]",
+                            latex_symbols = "[Latex]",
+                            luasnip = "[LuaSnip]",
+                        },
+                    },
+                },
+                window = {
+                    completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
+                },
+                view = {
+                    entries = {
+                        name = "custom",
+                        selection_order = "near_cursor",
+                    },
+                },
+                mapping = cmp.mapping.preset.insert {
+                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    ["<C-Space>"] = cmp.mapping.complete(),
+                    ["<CR>"] = cmp.mapping.confirm {
+                        behavior = cmp.ConfirmBehavior.Replace,
+                        select = true,
+                    },
+                    ["<Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        elseif luasnip.expand_or_jumpable() then
+                            luasnip.expand_or_jump()
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
+                    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        elseif luasnip.jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
+                },
+                sources = cmp.config.sources {
+                    { name = "nvim_lsp" },
+                    { name = "luasnip" },
+                    { name = "buffer" },
+                    { name = "calc" },
+                    { name = "path" },
+                    { name = "treesitter" },
+                },
+            }
         end,
     },
 
     {
+        "Exafunction/codeium.nvim",
+        lazy = false,
+        -- event = "InsertEnter",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "hrsh7th/nvim-cmp",
+        },
+        config = function()
+            require("codeium").setup {}
+        end,
+    },
+
+    {
+        "NvChad/nvim-colorizer.lua",
+        event = "BufRead *",
+    },
+
+    {
+        "linrongbin16/lsp-progress.nvim",
+        event = "BufRead *",
+        config = config,
+    },
+
+    {
+        "ray-x/lsp_signature.nvim",
+        event = "InsertEnter",
+        opts = {
+            bind = true,
+            handler_opts = {
+                border = "double",
+            },
+            floating_window_off_y = -1,
+            hint_enable = false,
+        },
+        config = function(_, opts)
+            require("lsp_signature").setup(opts)
+        end,
+    },
+
+    -- {
+    -- "neovim/nvim-lspconfig",
+    -- lazy = false,
+    -- },
+    -- {
+    --     "neovim/nvim-lspconfig",
+    --     event = { "BufReadPre", "BufNewFile" },
+    --     config = function()
+    --         require("nvchad.configs.lspconfig").defaults()
+    --         require "configs.lspconfig"
+    --     end,
+    -- },
+
+    {
         "williamboman/mason-lspconfig.nvim",
-        --event = "VeryLazy",
+        lazy = false,
         dependencies = { "nvim-lspconfig" },
         config = function()
             require "configs.mason-lspconfig"
@@ -49,12 +177,29 @@ return {
             require "configs.mason-lint"
         end,
     },
-
     {
         "stevearc/conform.nvim",
-        event = "BufWritePre",
+        event = { "BufReadPre", "BufNewFile" },
         config = function()
-            require "configs.conform"
+            local conform = require "conform"
+
+            conform.setup {
+                formatters_by_ft = {
+                    javascript = { "prettier" },
+                    typescript = { "prettier" },
+                    javascriptreact = { "prettier" },
+                    typescriptreact = { "prettier" },
+                    svelte = { "prettier" },
+                    css = { "prettier" },
+                    html = { "prettier" },
+                    json = { "prettier" },
+                    yaml = { "prettier" },
+                    markdown = { "prettier" },
+                    graphql = { "prettier" },
+                    lua = { "stylua" },
+                    python = { "isort", "black" },
+                },
+            }
         end,
     },
 
@@ -142,7 +287,7 @@ return {
         ---@module "auto-session"
         ---@type AutoSession.Config
         opts = {
-            -- ⚠️ This will only work if Telescope.nvim is installed
+            -- This will only work if Telescope.nvim is installed
             -- The following are already the default values, no need to provide them if these are already the settings you want.
             session_lens = {
                 -- If load_on_setup is false, make sure you use `:SessionSearch` to open the picker as it will initialize everything first
@@ -254,6 +399,7 @@ return {
                 "clangd",
                 "clang-format",
                 "codelldb",
+                "black",
             },
         },
     },
@@ -598,5 +744,81 @@ return {
         cmd = "ShowkeysToggle",
         event = "VimEnter",
         opt = { position = "top-right", show_count = true },
+    },
+    {
+        "folke/todo-comments.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+        },
+    },
+    {
+        "roobert/action-hints.nvim",
+        config = function()
+            require("action-hints").setup {
+                template = {
+                    definition = { text = " ⊛", color = "#82d2e0" },
+                    references = { text = " ↱%s", color = "#f6b596" },
+                },
+                use_virtual_text = true,
+            }
+        end,
+    },
+
+    {
+        "shellRaining/hlchunk.nvim",
+        event = { "BufReadPre", "BufNewFile" },
+        config = function()
+            require("hlchunk").setup {
+                chunk = {
+                    enable = true,
+                    priority = 15,
+                    style = {
+                        { fg = "#737994" },
+                        { fg = "#c21f30" },
+                    },
+                    use_treesitter = true,
+                    chars = {
+                        horizontal_line = "─",
+                        vertical_line = "│",
+                        left_top = "┌",
+                        left_bottom = "└",
+                        right_arrow = "─",
+                    },
+                    textobject = "",
+                    max_file_size = 1024 * 1024,
+                    error_sign = true,
+                    -- animation related
+                    duration = 300,
+                    delay = 120,
+                },
+                line_num = {
+                    enable = true,
+                    style = "#7aa0de",
+                    priority = 10,
+                    use_treesitter = false,
+                },
+            }
+        end,
+    },
+
+    {
+        "MeanderingProgrammer/render-markdown.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        opts = {},
+    },
+
+    {
+        "windwp/nvim-ts-autotag",
+        event = "BufRead *.html,*.js,*.jsx,*.ts,*.tsx",
+        config = config,
+    },
+
+    {
+        "RubixDev/mason-update-all",
     },
 }

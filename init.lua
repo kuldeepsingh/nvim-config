@@ -6,16 +6,10 @@ else
     local vim = vim
     local Plug = vim.fn["plug#"]
 
-    ------------------------------------------------
+    ----------------------------------------------------------------------------
     --- LSP install
-    ------------------------------------------------
+    ----------------------------------------------------------------------------
     vim.call "plug#begin"
-    Plug "neovim/nvim-lspconfig"
-    Plug "hrsh7th/cmp-nvim-lsp"
-    Plug "hrsh7th/cmp-buffer"
-    Plug "hrsh7th/cmp-path"
-    Plug "hrsh7th/cmp-cmdline"
-    Plug "hrsh7th/nvim-cmp"
     Plug "hrsh7th/cmp-vsnip"
     Plug "hrsh7th/vim-vsnip"
     vim.call "plug#end"
@@ -23,9 +17,9 @@ else
     vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
     vim.g.mapleader = " "
 
-    ---------------------------------------------------------------
+    ----------------------------------------------------------------------------
     -- bootstrap lazy and all plugins
-    ---------------------------------------------------------------
+    ----------------------------------------------------------------------------
     local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
     if not vim.uv.fs_stat(lazypath) then
@@ -49,80 +43,74 @@ else
         { import = "plugins" },
     }, lazy_config)
 
-    ---------------------------------------------------------------
+    require "nvchad.autocmds"
+    require "options"
+    require "mappings"
+
+    ----------------------------------------------------------------------------
     -- Set up nvim-cmp.
-    ---------------------------------------------------------------
-    local cmp = require "cmp"
-    cmp.setup {
-        snippet = {
-            -- REQUIRED - you must specify a snippet engine
-            expand = function(args)
-                vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-            end,
-        },
-        window = {
-            -- completion = cmp.config.window.bordered(),
-            -- documentation = cmp.config.window.bordered(),
-        },
-        mapping = cmp.mapping.preset.insert {
-            ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-            ["<C-f>"] = cmp.mapping.scroll_docs(4),
-            ["<C-Space>"] = cmp.mapping.complete(),
-            ["<C-e>"] = cmp.mapping.abort(),
-            ["<CR>"] = cmp.mapping.confirm { select = true }, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-        },
-        sources = cmp.config.sources({
-            { name = "nvim_lsp" },
-            { name = "vsnip" }, -- For vsnip users.
-        }, {
-            { name = "buffer" },
-        }),
-    }
+    ----------------------------------------------------------------------------
 
-    -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-    cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-            { name = "buffer" },
-        },
-    })
+    local on_attach = function(_, _)
+        local keyset = vim.keymap.set
+        keyset("n", "<leader>rn", vim.lsp.buf.rename, {}) -- rename
+        keyset("n", "<leader>ca", vim.lsp.buf.code_action, {}) -- code action
 
-    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-    cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-            { name = "path" },
-        }, {
-            { name = "cmdline" },
-        }, {
-            { name = "buffer" },
-        }),
-        matching = { disallow_symbol_nonprefix_matching = false },
-    })
+        keyset("n", "gd", vim.lsp.buf.definition, {}) -- global definition
+        keyset("n", "gi", vim.lsp.buf.implementation, {}) -- global implementation
+        keyset("n", "gr", require("telescope.builtin").lsp_references, {}) -- global references
+        keyset("n", "K", vim.lsp.buf.hover, {}) -- global implementation
+    end
 
-    local cmp_nvim_lsp = require "cmp_nvim_lsp"
+    local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+    -- Setup all of the LSPs
+    require("lspconfig").lua_ls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").rust_analyzer.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").clangd.setup {
         on_attach = on_attach,
-        capabilities = cmp_nvim_lsp.default_capabilities(),
+        capabilities = capabilities,
         cmd = {
             "clangd",
             "--offset-encoding=utf-16",
         },
+        init_options = { fallbackFlags = { "-std=c++20" } },
     }
+    require("lspconfig").texlab.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").marksman.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").jedi_language_server.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").html.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").cssls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").ts_ls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").bashls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").hls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").tailwindcss.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").asm_lsp.setup { on_attach = on_attach, capabilities = capabilities }
 
-    ---------------------------------------------------------------
+    require("mason-lspconfig").setup {
+        ensure_installed = {
+            "lua_ls", -- Lua
+            "rust_analyzer", -- Rust
+            "clangd", -- C/C++
+            "texlab", -- LaTeX
+            "marksman", -- Markdown
+            "jedi_language_server", -- Python
+            "html", -- HTML
+            "cssls",
+            "ts_ls", -- JS/TypeScript
+            "bashls", -- Bash
+        },
+    }
+    ----------------------------------------------------------------------------
     -- load theme
-    ---------------------------------------------------------------
+    ----------------------------------------------------------------------------
     dofile(vim.g.base46_cache .. "defaults")
     dofile(vim.g.base46_cache .. "statusline")
 
-    require "options"
-    require "nvchad.autocmds"
-
-    ---------------------------------------------------
+    ----------------------------------------------------------------------------
     --- Cscope map : Still needs to be configured
-    ----------------------------------------------------
+    --- FIXME : check this to set the multiple cscope DB
+    ----------------------------------------------------------------------------
     require("cscope_maps").setup {
         cscope = {
             -- location of cscope db file
@@ -130,17 +118,10 @@ else
         },
     }
 
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     ---Save and restore the sessions
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     require("auto-session").setup {}
-
-    require("cmp").setup {
-        sources = {
-            { name = "nvim_lsp" },
-            { name = "render-markdown" },
-        },
-    }
 
     ---------------------------------------------------
     -- Telescope config
@@ -172,16 +153,16 @@ else
     require("img-clip").setup {}
     require("render-markdown").setup {}
 
-    ---------------------------------------------------
+    ----------------------------------------------------------------------------
     -- AI setup
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     require("copilot").setup {}
     require("avante_lib").load()
     require("avante").setup {}
 
-    ---------------------------------------------------
+    ----------------------------------------------------------------------------
     -- nvim-tree Setup
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     local function my_on_attach(bufnr)
         local api = require "nvim-tree.api"
 
@@ -205,9 +186,9 @@ else
         ---
     }
 
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     --- Debugging setup for Python
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     require("dap-python").setup "/Users/kuldeepsingh/.virtualenvs/debugpy/bin/python"
 
     -- nvim dap mappings
@@ -264,15 +245,15 @@ else
     dap.configurations.c = dap.configurations.cpp
     dap.configurations.rust = dap.configurations.cpp
 
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     --- Symbol outline
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     require("symbols-outline").setup()
     vim.keymap.set("n", "<leader>ts", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
 
-    ----------------------------------------------------
-    --Terminal App
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
+    --- Terminal App
+    ----------------------------------------------------------------------------
     require("toggleterm").setup {
         persist_mode = false,
         direction = "horizontal",
@@ -285,9 +266,9 @@ else
     vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
     vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     --- Noice notices
-    ----------------------------------------------------
+    ----------------------------------------------------------------------------
     require("noice").setup {
         lsp = {
             -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -295,6 +276,9 @@ else
                 ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
                 ["vim.lsp.util.stylize_markdown"] = true,
                 ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+            },
+            signature = {
+                enabled = false,
             },
         },
         -- you can enable a preset for easier configuration
@@ -307,6 +291,9 @@ else
         },
     }
 
+    ----------------------------------------------------------------------------
+    --- FIXME : Need to check, what this does ?
+    ----------------------------------------------------------------------------
     vim.keymap.set("n", "<leader>cq", function()
         require("tiny-code-action").code_action()
     end, { noremap = true, silent = true })
@@ -335,9 +322,9 @@ else
     --     },
     -- }
 
-    -------------------------------------------------------------------
-    ---Fast scrolling
-    -------------------------------------------------------------------
+    ----------------------------------------------------------------------------
+    --- Fast scrolling
+    ----------------------------------------------------------------------------
     require("neoscroll").setup {
         mappings = { -- Keys to be mapped to their corresponding default scrolling animation
             "<C-u>",
@@ -365,9 +352,10 @@ else
         },
     }
 
-    ---------------------------------------
+    ----------------------------------------------------------------------------
     --- Diffview
-    --- -----------------------------------
+    --- FIXME : Need to check for the default mappings and setuu
+    ----------------------------------------------------------------------------
     local actions = require "diffview.actions"
 
     --- FIXME : fix the mapping for this to not conflict with others
@@ -964,22 +952,110 @@ else
         },
     }
 
-    --------------------------------------------------------------
+    ----------------------------------------------------------------------------
     --- Display underline all the words appearance as under cursor
-    -------------------------------------------------------------
+    ----------------------------------------------------------------------------
     require("illuminate").configure {}
 
-    ---------------------------------------------------------
+    ----------------------------------------------------------------------------
     --- Display column intellegently of column exceeds 80 char
-    ---------------------------------------------------------
+    ----------------------------------------------------------------------------
     require("smartcolumn").setup()
 
-    ---------------------------------------------------
+    ----------------------------------------------------------------------------
     --- Display the key pressed on top right corner
-    ---------------------------------------------------
+    ----------------------------------------------------------------------------
     require("showkeys").open()
 
-    vim.schedule(function()
-        require "mappings"
-    end)
+    ----------------------------------------------------------------------------
+    --- Display the action-hint for the code to the lua line
+    ----------------------------------------------------------------------------
+    require("lualine").setup {
+        sections = {
+            lualine_x = { require("action-hints").statusline },
+        },
+    }
+
+    ----------------------------------------------------------------------------
+    ---  highlight lines
+    ----------------------------------------------------------------------------
+    require("colorizer").setup {
+        filetypes = {
+            "*", -- Highlight all files, but customize some others.
+        },
+    }
+
+    require("nvim-ts-autotag").setup {
+        opts = {
+            enable_close = true, -- Auto close tags
+            enable_rename = true, -- Auto rename pairs of tags
+            enable_close_on_slash = false, -- Auto close on trailing </
+        },
+    }
+
+    ----------------------------------------------------------------------------
+    ---  LSP Setup
+    ----------------------------------------------------------------------------
+    require("lsp-progress").setup {
+        client_format = function(client_name, spinner, series_messages)
+            if #series_messages == 0 then
+                return nil
+            end
+            return {
+                name = client_name,
+                body = spinner .. " " .. table.concat(series_messages, ", "),
+            }
+        end,
+        format = function(client_messages)
+            --- @param name string
+            --- @param msg string?
+            --- @return string
+            local function stringify(name, msg)
+                return msg and string.format("%s %s", name, msg) or name
+            end
+
+            local sign = ""
+            local lsp_clients = vim.lsp.get_active_clients()
+            local messages_map = {}
+            for _, climsg in ipairs(client_messages) do
+                messages_map[climsg.name] = climsg.body
+            end
+
+            if #lsp_clients > 0 then
+                table.sort(lsp_clients, function(a, b)
+                    return a.name < b.name
+                end)
+                local builder = {}
+                for _, cli in ipairs(lsp_clients) do
+                    if type(cli) == "table" and type(cli.name) == "string" and string.len(cli.name) > 0 then
+                        if messages_map[cli.name] then
+                            table.insert(builder, stringify(cli.name, messages_map[cli.name]))
+                        else
+                            table.insert(builder, stringify(cli.name))
+                        end
+                    end
+                end
+                if #builder > 0 then
+                    return sign .. " " .. table.concat(builder, ", ")
+                end
+            end
+            return ""
+        end,
+    }
+
+    ---------------------------------------------------------------------------
+    --- Custom command to update tge mason
+    ---------------------------------------------------------------------------
+
+    require("mason-update-all").setup()
+
+    vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+    vim.api.nvim_create_autocmd("User", {
+        group = "lualine_augroup",
+        pattern = "LspProgressStatusUpdated",
+        callback = require("lualine").refresh,
+    })
+    -- vim.schedule(function()
+    -- require "mappings"
+    -- end)
 end
