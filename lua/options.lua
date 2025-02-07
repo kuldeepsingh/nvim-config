@@ -14,7 +14,7 @@ vim.opt.cursorcolumn = true
 -- disable netrw at the very start of your init.lua
 --  optionally enable 24-bit colour
 vim.opt.termguicolors = true
-vim.opt.relativenumber = false
+vim.opt.relativenumber = true
 vim.opt.statuscolumn = "%s %l %r "
 vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.opt.laststatus = 3
@@ -137,3 +137,20 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end,
     group = goimport_sync_grp,
 })
+
+local function hide_diagnostics()
+    vim.diagnostic.config { -- https://neovim.io/doc/user/diagnostic.html
+        virtual_text = false,
+        signs = false,
+        underline = false,
+    }
+end
+local function show_diagnostics()
+    vim.diagnostic.config {
+        virtual_text = true,
+        signs = true,
+        underline = true,
+    }
+end
+vim.keymap.set("n", "<leader>kh", hide_diagnostics)
+vim.keymap.set("n", "<leader>ks", show_diagnostics)
