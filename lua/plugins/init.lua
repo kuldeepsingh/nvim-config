@@ -206,18 +206,31 @@ return {
 
             conform.setup {
                 formatters_by_ft = {
-                    javascript = { "prettier" },
-                    typescript = { "prettier" },
-                    javascriptreact = { "prettier" },
-                    typescriptreact = { "prettier" },
-                    svelte = { "prettier" },
-                    css = { "prettier" },
-                    html = { "prettier" },
-                    json = { "prettier" },
-                    yaml = { "prettier" },
-                    markdown = { "prettier" },
-                    graphql = { "prettier" },
                     lua = { "stylua" },
+                    svelte = { { "prettierd", "prettier", stop_after_first = true } },
+                    astro = { { "prettierd", "prettier", stop_after_first = true } },
+                    javascript = { { "prettierd", "prettier", stop_after_first = true } },
+                    typescript = { { "prettierd", "prettier", stop_after_first = true } },
+                    javascriptreact = { { "prettierd", "prettier", stop_after_first = true } },
+                    typescriptreact = { { "prettierd", "prettier", stop_after_first = true } },
+                    json = { { "prettierd", "prettier", stop_after_first = true } },
+                    graphql = { { "prettierd", "prettier", stop_after_first = true } },
+                    java = { "google-java-format" },
+                    kotlin = { "ktlint" },
+                    ruby = { "standardrb" },
+                    markdown = { { "prettierd", "prettier", stop_after_first = true } },
+                    erb = { "htmlbeautifier" },
+                    html = { "htmlbeautifier" },
+                    bash = { "beautysh" },
+                    proto = { "buf" },
+                    rust = { "rustfmt" },
+                    yaml = { "yamlfix" },
+                    toml = { "taplo" },
+                    css = { { "prettierd", "prettier", stop_after_first = true } },
+                    scss = { { "prettierd", "prettier", stop_after_first = true } },
+                    sh = { "shellcheck" },
+                    go = { "gofmt" },
+                    xml = { "xmllint" },
                     python = { "isort", "black" },
                 },
                 format_on_save = {
@@ -245,6 +258,7 @@ return {
             "nvim-lua/plenary.nvim",
             { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
             { "nvim-telescope/telescope-live-grep-args.nvim", version = "^1.0.0" },
+            { "debugloop/telescope-undo.nvim" },
         },
         config = function()
             require("telescope").setup {
@@ -260,6 +274,7 @@ return {
 
             require("telescope").load_extension "fzf"
             require("telescope").load_extension "live_grep_args"
+            require("telescope").load_extension "undo"
 
             vim.keymap.set("n", "<space>fh", require("telescope.builtin").help_tags)
             vim.keymap.set("n", "<space>fd", require("telescope.builtin").find_files)
@@ -578,8 +593,11 @@ return {
 
     {
         "linrongbin16/gentags.nvim",
+        opts = {
+            workspace = { ".root", ".git", ".svn", ".hg" },
+        },
         config = function()
-            require("gentags").setup()
+            require("gentags").setup(opts)
         end,
     },
 
@@ -662,7 +680,7 @@ return {
 
     {
         "isakbm/gitgraph.nvim",
-	dependencies = { "sindrets/diffview.nvim" },
+        dependencies = { "sindrets/diffview.nvim" },
         opts = {
             symbols = {
                 merge_commit = "M",
@@ -676,7 +694,7 @@ return {
                 on_select_commit = function(commit)
                     vim.notify("DiffviewOpen " .. commit.hash .. "^!")
                     vim.cmd(":DiffviewOpen " .. commit.hash .. "^!")
-		    print("selected commit:", commit.hash)
+                    print("selected commit:", commit.hash)
                 end,
                 on_select_range_commit = function(from, to)
                     print("selected range:", from.hash, to.hash)
@@ -855,6 +873,7 @@ return {
     {
         "RubixDev/mason-update-all",
     },
+
     {
         "kdheepak/lazygit.nvim",
         lazy = false,

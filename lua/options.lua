@@ -156,3 +156,13 @@ vim.keymap.set("n", "<leader>kh", hide_diagnostics)
 vim.keymap.set("n", "<leader>ks", show_diagnostics)
 
 vim.cmd [[ autocmd BufEnter * silent! lcd %:p:h ]]
+
+local group = vim.api.nvim_create_augroup("CscopeBuild", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePost", {
+    pattern = { "*.cpp", "*.c", "*.h", "*.S" },
+    callback = function()
+        vim.cmd "Cscope db build"
+    end,
+    group = group,
+})
+vim.keymap.set("n", "<leader>tu", "<cmd>Telescope undo<cr>")

@@ -74,7 +74,7 @@ else
             "clangd",
             "--offset-encoding=utf-16",
         },
-        init_options = { fallbackFlags = { "-std=c++20" } },
+        init_options = {},
     }
     require("lspconfig").texlab.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").marksman.setup { on_attach = on_attach, capabilities = capabilities }
@@ -86,6 +86,7 @@ else
     require("lspconfig").hls.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").tailwindcss.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").asm_lsp.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").pyright.setup { on_attach = on_attach, capabilities = capabilities }
 
     require("mason-lspconfig").setup {
         ensure_installed = {
@@ -99,6 +100,7 @@ else
             "cssls",
             "ts_ls", -- JS/TypeScript
             "bashls", -- Bash
+            "pyright",
         },
     }
     ----------------------------------------------------------------------------
@@ -106,17 +108,6 @@ else
     ----------------------------------------------------------------------------
     dofile(vim.g.base46_cache .. "defaults")
     dofile(vim.g.base46_cache .. "statusline")
-
-    ----------------------------------------------------------------------------
-    --- Cscope map : Still needs to be configured
-    --- FIXME : check this to set the multiple cscope DB
-    ----------------------------------------------------------------------------
-    require("cscope_maps").setup {
-        cscope = {
-            -- location of cscope db file
-            --db_file = "./cscope.out",
-        },
-    }
 
     ----------------------------------------------------------------------------
     ---Save and restore the sessions
@@ -972,8 +963,22 @@ else
     ----------------------------------------------------------------------------
     require("lualine").setup {
         sections = {
-            lualine_x = { require("action-hints").statusline },
+            lualine_a = { "mode" },
+            lualine_b = { "diff", "diagnostics" },
+            lualine_c = { { "filename", path = 1 } },
+            lualine_x = {
+                { "fileformat", "filetype" },
+                { require("action-hints").statusline },
+                {
+                    require("noice").api.statusline.mode.get,
+                    cond = require("noice").api.statusline.mode.has,
+                    color = { fg = "#ff9e64" },
+                },
+            },
+            lualine_y = { "progress" },
+            lualine_z = { "location" },
         },
+        extensions = { "fugitive", "quickfix", "fzf", "lazy", "mason", "nvim-dap-ui", "oil", "trouble" },
     }
 
     ----------------------------------------------------------------------------
@@ -1044,7 +1049,7 @@ else
     }
 
     ---------------------------------------------------------------------------
-    --- Custom command to update tge mason
+    --- Custom command to update the mason
     ---------------------------------------------------------------------------
 
     require("mason-update-all").setup()
@@ -1058,7 +1063,67 @@ else
 
     require("telescope").load_extension "lazygit"
 
-    -- vim.schedule(function()
-    -- require "mappings"
-    -- end)
+    local cfg = {
+        floating_window_off_x = 5, -- adjust float windows x position.
+        floating_window_off_y = function() -- adjust float windows y position. e.g. set to -2 can make floating window move up 2 lines
+            local linenr = vim.api.nvim_win_get_cursor(0)[1] -- buf line number
+            local pumheight = vim.o.pumheight
+            local winline = vim.fn.winline() -- line number in the window
+            local winheight = vim.fn.winheight(0)
+
+            -- window top
+            if winline - 1 < pumheight then
+                return pumheight
+            end
+
+            -- window bottom
+            if winheight - winline < pumheight then
+                return -pumheight
+            end
+            return 0
+        end,
+    }
+    require("lsp_signature").setup(cfg)
+
+    ----------------------------------------------------------------------------
+    --- Cscope map : Still needs to be configured
+    --- FIXME : check this to set the multiple cscope DB
+    ----------------------------------------------------------------------------
+    require("cscope_maps").setup {
+        cscope = {
+            db_file = { "cscope.out" },
+            use_telescope = true,
+            picker = "telescope",
+            skip_picker_for_single_result = true,
+            db_build_cmd = { script = "none", args = { "-bgR" } },
+            project_rooter = {
+                enable = true, -- “true” or "false"
+                change_cwd = true, -- “true” or “false”
+            },
+        },
+    }
+    vim.api.nvim_create_user_command("TT", function(opts)
+        vim.cmd("Cstag " .. opts.args)
+    end, { nargs = 1 })
+
+    local function get_project_root()
+        local dot_root_path = vim.fn.finddir(".root", ".;")
+        print("DEBUG ROOT_PATH 3234 %s: " .. dot_root_path)
+        local path_local = vim.fn.fnamemodify(dot_root_path, ":h")
+        print("DEBUG final path :" .. path_local)
+        return path_local
+    end
+
+    local group = vim.api.nvim_create_augroup("CscopeBuild", { clear = true })
+    vim.api.nvim_create_autocmd("BufWritePost", {
+        pattern = { "*.c", "*.h", "*.cc", "*.cpp", "*.s", "*.S" },
+        callback = function()
+            vim.api.nvim_set_current_dir(get_project_root())
+            vim.cmd "Cscope db build"
+        end,
+        group = group,
+    })
+    vim.keymap.set("n", "<leader>cb", ":Cscope db build<CR>", { desc = "build cscope database" })
+    --- vim. keymap.set('n', ‘<leader>ca', “:Cscope db add", { desc = ‘add cscope database‘ })
+    --- vim. keymap.set('n', ‘<leader>cg', [[<Cmd>execute “Cscope find s “ . expand("<cword>")<CR>]], {noremap = true, silent = true})
 end
