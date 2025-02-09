@@ -119,14 +119,14 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- -- Golang format on save
--- local goformat_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
--- vim.api.nvim_create_autocmd("BufWritePre", {
---   pattern = "*.go",
---   callback = function()
---     require('go.format').gofmt()
---   end,
---   group = goformat_sync_grp,
--- })
+local goformat_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.go",
+    callback = function()
+        require("go.format").gofmt()
+    end,
+    group = goformat_sync_grp,
+})
 --
 -- Run gofmt + goimport on save
 local goimport_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
@@ -138,6 +138,10 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     group = goimport_sync_grp,
 })
 
+-------------------------------------------------------------------------------
+--- Display diagnos analysis
+--- Display hide or show the code analysis
+-------------------------------------------------------------------------------
 local function hide_diagnostics()
     vim.diagnostic.config { -- https://neovim.io/doc/user/diagnostic.html
         virtual_text = false,
@@ -145,6 +149,7 @@ local function hide_diagnostics()
         underline = false,
     }
 end
+
 local function show_diagnostics()
     vim.diagnostic.config {
         virtual_text = true,
@@ -152,11 +157,19 @@ local function show_diagnostics()
         underline = true,
     }
 end
-vim.keymap.set("n", "<leader>kh", hide_diagnostics)
-vim.keymap.set("n", "<leader>ks", show_diagnostics)
+vim.keymap.set("n", "<leader>kh", hide_diagnostics, { desc = "Hide the diagostics" })
+vim.keymap.set("n", "<leader>kg", show_diagnostics, { desc = "Show the diagostics" })
+
+--- Disabling the diagnosis by default
+vim.diagnostic.config { -- https://neovim.io/doc/user/diagnostic.html
+    virtual_text = false,
+    signs = false,
+    underline = false,
+}
 
 vim.cmd [[ autocmd BufEnter * silent! lcd %:p:h ]]
 
+--- Auto building of cscope.sb on write for the project
 local group = vim.api.nvim_create_augroup("CscopeBuild", { clear = true })
 vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = { "*.cpp", "*.c", "*.h", "*.S" },
@@ -165,4 +178,9 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     end,
     group = group,
 })
+
+-- undo tree
 vim.keymap.set("n", "<leader>tu", "<cmd>Telescope undo<cr>")
+
+-- Toggle maximizing the current window:
+vim.keymap.set("n", "<Leader>az", "<Cmd>lua require('maximize').toggle()<CR>")
