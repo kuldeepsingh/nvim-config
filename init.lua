@@ -78,7 +78,7 @@ else
     }
     require("lspconfig").texlab.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").marksman.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").jedi_language_server.setup { on_attach = on_attach, capabilities = capabilities }
+    --    require("lspconfig").jedi_language_server.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").html.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").cssls.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").ts_ls.setup { on_attach = on_attach, capabilities = capabilities }
@@ -95,12 +95,12 @@ else
             "clangd", -- C/C++
             "texlab", -- LaTeX
             "marksman", -- Markdown
-            "jedi_language_server", -- Python
+            --       "jedi_language_server", -- Python
             "html", -- HTML
             "cssls",
             "ts_ls", -- JS/TypeScript
             "bashls", -- Bash
-            "pyright",
+            "pyright", --Python
         },
     }
     ----------------------------------------------------------------------------
@@ -152,32 +152,7 @@ else
     require("avante").setup {}
 
     ----------------------------------------------------------------------------
-    -- nvim-tree Setup
-    ----------------------------------------------------------------------------
-    local function my_on_attach(bufnr)
-        local api = require "nvim-tree.api"
-
-        local function opts(desc)
-            return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-        end
-
-        -- default mappings
-        api.config.mappings.default_on_attach(bufnr)
-
-        --  CTRL+n is mappedi to open the file explorer
-
-        vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "File Explorer" })
-        vim.keymap.set("n", "?", api.tree.toggle_help, opts "Help")
-    end
-
-    -- pass to setup along with your other options
-    require("nvim-tree").setup {
-        ---
-        on_attach = my_on_attach,
-        ---
-    }
-
-    ----------------------------------------------------------------------------
+    --
     --- Debugging setup for Python
     ----------------------------------------------------------------------------
     require("dap-python").setup "/Users/kuldeepsingh/.virtualenvs/debugpy/bin/python"
@@ -279,6 +254,11 @@ else
             long_message_to_split = true, -- long messages will be sent to a split
             inc_rename = false, -- enables an input dialog for inc-rename.nvim
             lsp_doc_border = false, -- add a border to hover docs and signature help
+        },
+        cmdline = {
+            enabled = true, -- enables the Noice cmdline UI
+            view = "cmdline",
+            --view = "cmdline_popup",
         },
     }
 
@@ -1118,19 +1098,23 @@ else
     })
     vim.keymap.set("n", "<leader>cb", ":Cscope db build<CR>", { desc = "build cscope database" })
 
+    require("cmp.config.context").in_treesitter_capture "spell"
+
     ---  Drop down list for the search in the cmdline setup.
     local cmp = require "cmp"
     cmp.setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
-            { name = "buffer" },
+            { name = "buffer", { name = "dictionary", keyword_length = 2 } },
         },
+        completeopt = "menu,menuone,noinsert",
     })
+
     -- `:` cmdline setup.
     cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
-            { name = "path" },
+            { name = "path", name = "dictionary", name = "buffer" },
         }, {
             {
                 name = "cmdline",
@@ -1139,5 +1123,27 @@ else
                 },
             },
         }),
+        completeopt = "menu,menuone,noinsert",
     })
+
+    cmp.setup.filetype("gitcommit", {
+        sources = cmp.config.sources({
+            { name = "git" },
+        }, {
+            { name = "buffer" },
+        }),
+    })
+
+    ---------------------------------------------------------------------------
+    --- NULL-LS : checking spelling
+    ---------------------------------------------------------------------------
+    local null_ls = require "null-ls"
+
+    null_ls.setup {
+        sources = {
+            null_ls.builtins.formatting.stylua,
+            null_ls.builtins.diagnostics.eslint,
+            null_ls.builtins.completion.spell,
+        },
+    }
 end

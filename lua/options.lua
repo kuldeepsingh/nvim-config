@@ -24,6 +24,8 @@ vim.opt.foldcolumn = "1"
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 1
 vim.opt.foldenable = true
+vim.o.completeopt = "menuone,noselect"
+vim.opt_local.spell = true
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",
@@ -67,8 +69,8 @@ vim.api.nvim_create_autocmd(
     {
         pattern = { "*.txt", "*.md", "*.tex" },
         callback = function()
-            vim.opt.spell = true
             vim.opt.spelllang = "en"
+            vim.opt.spell = true
         end,
     }
 )
@@ -170,14 +172,14 @@ vim.diagnostic.config { -- https://neovim.io/doc/user/diagnostic.html
 vim.cmd [[ autocmd BufEnter * silent! lcd %:p:h ]]
 
 --- Auto building of cscope.sb on write for the project
-local group = vim.api.nvim_create_augroup("CscopeBuild", { clear = true })
-vim.api.nvim_create_autocmd("BufWritePost", {
-    pattern = { "*.cpp", "*.c", "*.h", "*.S" },
-    callback = function()
-        vim.cmd "Cscope db build"
-    end,
-    group = group,
-})
+-- local group = vim.api.nvim_create_augroup("CscopeBuild", { clear = true })
+-- vim.api.nvim_create_autocmd("BufWritePost", {
+-- pattern = { "*.cpp", "*.c", "*.h", "*.S" },
+-- callback = function()
+-- vim.cmd "Cscope db build"
+-- end,
+-- group = group,
+-- })
 
 -- undo tree
 vim.keymap.set("n", "<leader>tu", "<cmd>Telescope undo<cr>")
