@@ -228,7 +228,6 @@ return {
                     toml = { "taplo" },
                     css = { { "prettierd", "prettier", stop_after_first = true } },
                     scss = { { "prettierd", "prettier", stop_after_first = true } },
-                    sh = { "shellcheck" },
                     go = { "gofmt" },
                     xml = { "xmllint" },
                     python = { "isort", "black" },
@@ -713,37 +712,37 @@ return {
             },
         },
     },
-    {
-        "krisajenkins/telescope-docker.nvim",
-        event = "VeryLazy",
-        dependencies = {
-            "nvim-telescope/telescope.nvim",
-        },
-        config = function()
-            require("telescope").load_extension "telescope_docker"
-            require("telescope_docker").setup {}
-        end,
-
-        -- Example keybindings. Adjust these to suit your preferences or remove
-        --   them entirely:
-        keys = {
-            {
-                "<Leader>dlv",
-                ":Telescope telescope_docker docker_volumes<CR>",
-                desc = "[D]ocker [V]olumes",
-            },
-            {
-                "<Leader>dls",
-                ":Telescope telescope_docker docker_images<CR>",
-                desc = "[D]ocker [I]mages",
-            },
-            {
-                "<Leader>dlp",
-                ":Telescope telescope_docker docker_ps<CR>",
-                desc = "[D]ocker [P]rocesses",
-            },
-        },
-    },
+    -- {
+    --     "krisajenkins/telescope-docker.nvim",
+    --     event = "VeryLazy",
+    --     dependencies = {
+    --         "nvim-telescope/telescope.nvim",
+    --     },
+    --     config = function()
+    --         require("telescope").load_extension "telescope_docker"
+    --         require("telescope_docker").setup {}
+    --     end,
+    --
+    --     -- Example keybindings. Adjust these to suit your preferences or remove
+    --     --   them entirely:
+    --     keys = {
+    --         {
+    --             "<Leader>dlv",
+    --             ":Telescope telescope_docker docker_volumes<CR>",
+    --             desc = "[D]ocker [V]olumes",
+    --         },
+    --         {
+    --             "<Leader>dls",
+    --             ":Telescope telescope_docker docker_images<CR>",
+    --             desc = "[D]ocker [I]mages",
+    --         },
+    --         {
+    --             "<Leader>dlp",
+    --             ":Telescope telescope_docker docker_ps<CR>",
+    --             desc = "[D]ocker [P]rocesses",
+    --         },
+    --     },
+    -- },
 
     {
         "karb94/neoscroll.nvim",
@@ -881,6 +880,10 @@ return {
         "declancm/maximize.nvim",
         config = true,
     },
+
+    ---------------------------------------------------------------------------
+    -- Yazi integration
+    ---------------------------------------------------------------------------
     {
         "mikavilpas/yazi.nvim",
         event = "VeryLazy",
@@ -909,13 +912,26 @@ return {
         ---@type YaziConfig
         opts = {
             -- if you want to open yazi instead of netrw, see below for more info
-            open_for_directories = false,
+            open_for_directories = true,
             keymaps = {
                 show_help = "<f1>",
             },
         },
     },
+
+    ---------------------------------------------------------------------------
+    -- For adding the dictionary
+    ---------------------------------------------------------------------------
     {
         "uga-rosa/cmp-dictionary",
+    },
+
+    {
+        "aaronhallaert/advanced-git-search.nvim",
+        dependencies = {
+            "nvim-telescope/telescope.nvim",
+            "tpope/vim-fugitive",
+            "tpope/vim-rhubarb",
+        },
     },
 }

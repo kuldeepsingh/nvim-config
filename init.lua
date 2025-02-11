@@ -101,6 +101,7 @@ else
             "ts_ls", -- JS/TypeScript
             "bashls", -- Bash
             "pyright", --Python
+            "taplo", --toml
         },
     }
     ----------------------------------------------------------------------------
@@ -125,6 +126,10 @@ else
     vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers" })
     vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
     vim.keymap.set("n", "<leader>ft", builtin.lsp_document_symbols, { desc = "Telescope current buffer tags" })
+    vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "Find Keymaps" })
+    vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "Find Word under Cursor" })
+    vim.keymap.set("n", "<leader>gc", builtin.git_commits, { desc = "Search Git Commits" })
+    vim.keymap.set("n", "<leader>gb", builtin.git_bcommits, { desc = "Search Git Commits for Buffer" })
     vim.keymap.set(
         "n",
         "<leader>fg",
@@ -139,7 +144,9 @@ else
         { desc = "Telescope search buffer under cursor with directory option" }
     )
 
+    require("telescope").load_extension "advanced_git_search"
     require("telescope").load_extension "noice"
+    require("telescope").load_extension "fzf"
 
     require("img-clip").setup {}
     require("render-markdown").setup {}
@@ -173,6 +180,8 @@ else
     vim.keymap.set("n", "<leader>do", require("dap").step_out, { desc = "Step out" })
     vim.keymap.set("n", "<F9>", require("dap").step_out, { desc = "Step out" })
 
+    vim.keymap.set("n", "<leader>dl", require("dap").close, { desc = "Stop" })
+
     local dap, dapui = require "dap", require "dapui"
     dapui.setup()
 
@@ -182,6 +191,12 @@ else
     end
     dap.listeners.before.launch.dapui_config = function()
         dapui.open()
+    end
+    dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+    end
+    dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
     end
 
     -- close Dap UI with :DapCloseUI
