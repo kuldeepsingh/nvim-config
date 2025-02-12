@@ -455,6 +455,7 @@ return {
 
             mason_tool_installer.setup {
                 ensure_installed = {
+                    "lua-language-server",
                     "prettier", -- prettier formatter
                     "stylua", -- lua formatter
                     "isort", -- python formatter
@@ -511,11 +512,12 @@ return {
 
             dap.adapters.codelldb = {
                 name = "lldb server",
+                host = "127.0.0.1",
                 type = "server",
-                port = "${port}",
+                port = "13387",
                 executable = {
                     command = "/Users/kuldeepsingh/.local/share/nvim/mason/bin/codelldb",
-                    args = { "--port", "${port}" },
+                    args = { "--port", "13387" },
                 },
             }
         end,
@@ -523,12 +525,61 @@ return {
 
     {
         "mfussenegger/nvim-dap-python",
-        dependencies = {
-            "mfussenegger/nvim-dap",
-            "rcarriga/nvim-dap-ui",
-        },
-        ft = { "python" },
-        config = function() end,
+        dependencies = { "mfussenegger/nvim-dap" },
+        enabled = true,
+        config = function()
+            local status, dap = pcall(require, "dap")
+            if not status then
+                return
+            end
+            local dappython
+            status, dappython = pcall(require, "dap-python")
+            if not status then
+                return
+            end
+            dap.configurations.python = {
+                {
+                    type = "python",
+                    request = "launch",
+                    name = "Launch file (justMyCode = false)",
+                    program = "${file}",
+                    justMyCode = false,
+                },
+                {
+                    type = "python",
+                    request = "launch",
+                    name = "Launch file with arguments (justMyCode = false)",
+                    program = "${file}",
+                    justMyCode = false,
+                    args = function()
+                        local args_string = vim.fn.input "Arguments: "
+                        return vim.split(args_string, " +")
+                    end,
+                },
+                {
+                    type = "python",
+                    request = "launch",
+                    name = "Launch file (console = integratedTerminal, justMyCode = false)",
+                    program = "${file}",
+                    console = "integratedTerminal",
+                    justMyCode = false,
+                    -- pythonPath = opts.pythonPath,
+                },
+                {
+                    type = "python",
+                    request = "launch",
+                    name = "Launch file with arguments (console = integratedTerminal, justMyCode = false)",
+                    program = "${file}",
+                    console = "integratedTerminal",
+                    justMyCode = false,
+                    -- pythonPath = opts.pythonPath,
+                    args = function()
+                        local args_string = vim.fn.input "Arguments: "
+                        return vim.split(args_string, " +")
+                    end,
+                },
+            }
+        end,
     },
 
     {
@@ -919,12 +970,6 @@ return {
         },
     },
 
-    ---------------------------------------------------------------------------
-    -- For adding the dictionary
-    ---------------------------------------------------------------------------
-    {
-        "uga-rosa/cmp-dictionary",
-    },
 
     {
         "aaronhallaert/advanced-git-search.nvim",

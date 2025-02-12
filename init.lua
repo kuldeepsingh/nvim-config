@@ -162,7 +162,11 @@ else
     --
     --- Debugging setup for Python
     ----------------------------------------------------------------------------
-    require("dap-python").setup "/Users/kuldeepsingh/.virtualenvs/debugpy/bin/python"
+    require("dap-python").setup("~/.virtualenvs/debugpy/bin/python", {
+        include_configs = true,
+        console = "integratedTerminal",
+        pythonPath = nil,
+    })
 
     -- nvim dap mappings
     vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<CR>", { desc = "Toggle the break point" })
@@ -181,6 +185,7 @@ else
     vim.keymap.set("n", "<F9>", require("dap").step_out, { desc = "Step out" })
 
     vim.keymap.set("n", "<leader>dl", require("dap").close, { desc = "Stop" })
+    vim.keymap.set("n", "<Leader>dt", require("dapui").toggle, { desc = "Toggle Dap UI" })
 
     local dap, dapui = require "dap", require "dapui"
     dapui.setup()
@@ -212,14 +217,20 @@ else
     local dap = require "dap"
     dap.configurations.cpp = {
         {
-            name = "Launch file",
+            name = "Launch file with arguments (justMyCode = false)",
             type = "codelldb",
             request = "launch",
             program = function()
                 return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
             end,
+            justMyCode = false,
+            args = function()
+                local args_string = vim.fn.input "Arguments: "
+                return vim.split(args_string, " +")
+            end,
             cwd = "${workspaceFolder}",
             stopOnEntry = false,
+            runInTerminal = true,
         },
     }
 
