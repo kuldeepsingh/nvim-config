@@ -970,7 +970,6 @@ return {
         },
     },
 
-
     {
         "aaronhallaert/advanced-git-search.nvim",
         dependencies = {
@@ -978,5 +977,9 @@ return {
             "tpope/vim-fugitive",
             "tpope/vim-rhubarb",
         },
+    },
+
+    {
+        "uga-rosa/cmp-dictionary",
     },
 }

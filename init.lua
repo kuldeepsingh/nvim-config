@@ -270,7 +270,7 @@ else
                 ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
             },
             signature = {
-                enabled = false,
+                enabled = true,
             },
         },
         -- you can enable a preset for easier configuration
@@ -283,10 +283,17 @@ else
         },
         cmdline = {
             enabled = true, -- enables the Noice cmdline UI
-            view = "cmdline",
+            view = "cmdline_popup",
             --view = "cmdline_popup",
         },
     }
+
+    vim.api.nvim_set_keymap("c", "<Down>", 'v:lua.get_wildmenu_key("<right>", "<down>")', { expr = true })
+    vim.api.nvim_set_keymap("c", "<Up>", 'v:lua.get_wildmenu_key("<left>", "<up>")', { expr = true })
+
+    function _G.get_wildmenu_key(key_wildmenu, key_regular)
+        return vim.fn.wildmenumode() ~= 0 and key_wildmenu or key_regular
+    end
 
     ----------------------------------------------------------------------------
     --- FIXME : Need to check, what this does ?
@@ -1140,7 +1147,7 @@ else
     cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
-            { name = "path", name = "dictionary", name = "buffer" },
+            { name = "path" },
         }, {
             {
                 name = "cmdline",
@@ -1174,13 +1181,34 @@ else
     }
 
     require("cmp").setup {
-        -- other settings
+        snippet = {
+            expand = function(args)
+                luasnip.lsp_expand(args.body)
+            end,
+        },
         sources = {
-            -- other sources
+            { name = "nvim_lsp" },
+            { name = "buffer" },
             {
                 name = "dictionary",
                 keyword_length = 2,
             },
         },
+        mapping = cmp.mapping.preset.insert {
+            ["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
+            ["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down
+            ["<C-j>"] = cmp.mapping.select_next_item(),
+            ["<C-k>"] = cmp.mapping.select_prev_item(),
+            ["<C-Space>"] = cmp.mapping.complete(),
+            ["<CR>"] = cmp.mapping.confirm {
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+            },
+        },
+    }
+
+    require("cmp_dictionary").setup {
+        paths = { "/usr/share/dict/words" },
+        exact_length = 2,
     }
 end
