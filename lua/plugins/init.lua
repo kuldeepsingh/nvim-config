@@ -982,4 +982,11 @@ return {
     {
         "uga-rosa/cmp-dictionary",
     },
+
+    {
+        "jemag/telescope-diff.nvim",
+        dependencies = {
+            { "nvim-telescope/telescope.nvim" },
+        },
+    },
 }

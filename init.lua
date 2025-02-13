@@ -1207,8 +1207,22 @@ else
         },
     }
 
+    ---------------------------------------------------------------------------
+    --- Dictionary setup for the md and txt files
+    ---------------------------------------------------------------------------
     require("cmp_dictionary").setup {
         paths = { "/usr/share/dict/words" },
         exact_length = 2,
     }
+
+    ---------------------------------------------------------------------------
+    --- Diff 2 files
+    ---------------------------------------------------------------------------
+    require("telescope").load_extension "diff"
+    vim.keymap.set("n", "<leader>d2", function()
+        require("telescope").extensions.diff.diff_files { hidden = true }
+    end, { desc = "Compare 2 files" })
+    vim.keymap.set("n", "<leader>d1", function()
+        require("telescope").extensions.diff.diff_current { hidden = true }
+    end, { desc = "Compare file with current" })
 end
