@@ -182,7 +182,7 @@ vim.cmd [[ autocmd BufEnter * silent! lcd %:p:h ]]
 -- })
 
 -- undo tree
-vim.keymap.set("n", "<leader>tu", "<cmd>Telescope undo<cr>")
+vim.keymap.set("n", "undo", "<cmd>Telescope undo<cr>")
 
 -- Toggle maximizing the current window:
 vim.keymap.set("n", "<Leader>az", "<Cmd>lua require('maximize').toggle()<CR>")
