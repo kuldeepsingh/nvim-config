@@ -66,7 +66,18 @@ else
 
     -- Setup all of the LSPs
     require("lspconfig").lua_ls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").gopls.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").rust_analyzer.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").texlab.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").marksman.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").html.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").cssls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").ts_ls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").bashls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").hls.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").tailwindcss.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").asm_lsp.setup { on_attach = on_attach, capabilities = capabilities }
+    require("lspconfig").pyright.setup { on_attach = on_attach, capabilities = capabilities }
     require("lspconfig").clangd.setup {
         on_attach = on_attach,
         capabilities = capabilities,
@@ -76,17 +87,6 @@ else
         },
         init_options = {},
     }
-    require("lspconfig").texlab.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").marksman.setup { on_attach = on_attach, capabilities = capabilities }
-    --    require("lspconfig").jedi_language_server.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").html.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").cssls.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").ts_ls.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").bashls.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").hls.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").tailwindcss.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").asm_lsp.setup { on_attach = on_attach, capabilities = capabilities }
-    require("lspconfig").pyright.setup { on_attach = on_attach, capabilities = capabilities }
 
     require("mason-lspconfig").setup {
         ensure_installed = {
@@ -95,13 +95,13 @@ else
             "clangd", -- C/C++
             "texlab", -- LaTeX
             "marksman", -- Markdown
-            --       "jedi_language_server", -- Python
             "html", -- HTML
             "cssls",
             "ts_ls", -- JS/TypeScript
             "bashls", -- Bash
             "pyright", --Python
             "taplo", --toml
+            "gopls",
         },
     }
     ----------------------------------------------------------------------------
@@ -240,8 +240,20 @@ else
     ----------------------------------------------------------------------------
     --- Symbol outline
     ----------------------------------------------------------------------------
-    require("symbols-outline").setup()
-    vim.keymap.set("n", "<leader>ts", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
+    local opts = {
+        highlight_hovered_item = true,
+        show_guides = true,
+        auto_preview = false,
+        position = "right",
+        relative_width = true,
+        show_numbers = true,
+        show_relative_numbers = true,
+        show_symbol_details = true,
+        autofold_depth = nil,
+        auto_unfold_hover = true,
+    }
+    require("symbols-outline").setup(opts)
+    vim.keymap.set("n", ",s", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
 
     ----------------------------------------------------------------------------
     --- Terminal App
@@ -1225,4 +1237,16 @@ else
     vim.keymap.set("n", "<leader>d1", function()
         require("telescope").extensions.diff.diff_current { hidden = true }
     end, { desc = "Compare file with current" })
+
+    vim.keymap.set("n", "zen", function()
+        require("focus").toggle_zen {
+            zen = {
+                opts = {
+                    number = true, -- enable number column
+                    relativenumber = true, -- enable relative numbers
+                    statuscolumn = "%=%{v:relnum?v:relnum:v:lnum} ", -- enable statuscolumn with specific configuration
+                },
+            },
+        }
+    end, { desc = "Toggle Zen Mode" })
 end
