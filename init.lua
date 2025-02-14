@@ -253,7 +253,7 @@ else
         auto_unfold_hover = true,
     }
     require("symbols-outline").setup(opts)
-    vim.keymap.set("n", ",s", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
+    vim.keymap.set("n", "sym", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
 
     ----------------------------------------------------------------------------
     --- Terminal App
@@ -267,7 +267,7 @@ else
         ---    border = "double",
         ---},
     }
-    vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
+    vim.keymap.set("n", "ter", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
     vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
     ----------------------------------------------------------------------------
@@ -1249,4 +1249,7 @@ else
             },
         }
     end, { desc = "Toggle Zen Mode" })
+
+    require("twilight.config").setup {}
+    vim.keymap.set("n", "dim", "<cmd>Twilight<CR>", { desc = "Toggle Twilight mode" })
 end

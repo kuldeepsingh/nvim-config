@@ -685,12 +685,16 @@ return {
         },
         opts = {},
     },
+
     {
         "vhyrro/luarocks.nvim",
         priority = 1000, -- Very high priority is required, luarocks.nvim should run as the first plugin in your config.
         config = true,
     },
 
+    ---------------------------------------------------------------------------
+    -- FIXME : dont know what to do
+    ---------------------------------------------------------------------------
     {
         "nvim-neorg/neorg",
         dependencies = { "luarocks.nvim" },
@@ -728,6 +732,9 @@ return {
         end,
     },
 
+    ---------------------------------------------------------------------------
+    -- Gitgraph plugin
+    ---------------------------------------------------------------------------
     {
         "isakbm/gitgraph.nvim",
         dependencies = { "sindrets/diffview.nvim" },
@@ -763,56 +770,40 @@ return {
             },
         },
     },
-    -- {
-    --     "krisajenkins/telescope-docker.nvim",
-    --     event = "VeryLazy",
-    --     dependencies = {
-    --         "nvim-telescope/telescope.nvim",
-    --     },
-    --     config = function()
-    --         require("telescope").load_extension "telescope_docker"
-    --         require("telescope_docker").setup {}
-    --     end,
-    --
-    --     -- Example keybindings. Adjust these to suit your preferences or remove
-    --     --   them entirely:
-    --     keys = {
-    --         {
-    --             "<Leader>dlv",
-    --             ":Telescope telescope_docker docker_volumes<CR>",
-    --             desc = "[D]ocker [V]olumes",
-    --         },
-    --         {
-    --             "<Leader>dls",
-    --             ":Telescope telescope_docker docker_images<CR>",
-    --             desc = "[D]ocker [I]mages",
-    --         },
-    --         {
-    --             "<Leader>dlp",
-    --             ":Telescope telescope_docker docker_ps<CR>",
-    --             desc = "[D]ocker [P]rocesses",
-    --         },
-    --     },
-    -- },
 
+    ---------------------------------------------------------------------------
+    -- Scroll smoothingly
+    ---------------------------------------------------------------------------
     {
         "karb94/neoscroll.nvim",
         opts = {},
     },
 
+    ---------------------------------------------------------------------------
+    -- Git diff
+    ---------------------------------------------------------------------------
     {
         "sindrets/diffview.nvim",
     },
 
+    ---------------------------------------------------------------------------
+    -- Illuminism similar word in the file as cursor
+    ---------------------------------------------------------------------------
     {
         "RRethy/vim-illuminate",
     },
 
+    ---------------------------------------------------------------------------
+    -- 80th column line will appear only if any line crosses 80th column
+    ---------------------------------------------------------------------------
     {
         "m4xshen/smartcolumn.nvim",
         opts = {},
     },
 
+    ---------------------------------------------------------------------------
+    -- Dashboard appears when nvim is used without any file
+    ---------------------------------------------------------------------------
     {
         "nvimdev/dashboard-nvim",
         event = "VimEnter",
@@ -947,15 +938,16 @@ return {
                 desc = "Open yazi at the current file",
             },
             {
-                -- Open in the current working directory
-                "<leader>cw",
-                "<cmd>Yazi cwd<cr>",
-                desc = "Open the file manager in nvim's working directory",
+                -- NOTE: this requires a version of yazi that includes
+                -- https://github.com/sxyazi/yazi/pull/1305 from 2024-07-18
+                "yazi",
+                "<cmd>Yazi toggle<cr>",
+                desc = "Resume the last yazi session",
             },
             {
                 -- NOTE: this requires a version of yazi that includes
                 -- https://github.com/sxyazi/yazi/pull/1305 from 2024-07-18
-                "<leader>e",
+                "file",
                 "<cmd>Yazi toggle<cr>",
                 desc = "Resume the last yazi session",
             },
@@ -979,10 +971,16 @@ return {
         },
     },
 
+    ---------------------------------------------------------------------------
+    --  Text file dictionary
+    ---------------------------------------------------------------------------
     {
         "uga-rosa/cmp-dictionary",
     },
 
+    ---------------------------------------------------------------------------
+    -- Diff 2 file d1 or d2 command
+    ---------------------------------------------------------------------------
     {
         "jemag/telescope-diff.nvim",
         dependencies = {
@@ -990,9 +988,24 @@ return {
         },
     },
 
+    ---------------------------------------------------------------------------
+    -- Zen view - using 'zen' command on normal mode
+    ---------------------------------------------------------------------------
     {
         "cdmill/focus.nvim",
         cmd = { "Focus", "Zen", "Narrow" },
+        opts = {
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+        },
+    },
+
+    ---------------------------------------------------------------------------
+    -- twilight mode - focus on the current active code using 'dim' command
+    ---------------------------------------------------------------------------
+    {
+        "folke/twilight.nvim",
         opts = {
             -- your configuration comes here
             -- or leave it empty to use the default settings
