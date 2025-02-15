@@ -46,11 +46,11 @@ else
     require "nvchad.autocmds"
     require "options"
     require "mappings"
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     -- Set up nvim-cmp.
     ----------------------------------------------------------------------------
-
     local on_attach = function(_, _)
         local keyset = vim.keymap.set
         keyset("n", "<leader>rn", vim.lsp.buf.rename, {}) -- rename
@@ -105,15 +105,20 @@ else
         },
     }
     ----------------------------------------------------------------------------
+
+    ----------------------------------------------------------------------------
     -- load theme
     ----------------------------------------------------------------------------
     dofile(vim.g.base46_cache .. "defaults")
     dofile(vim.g.base46_cache .. "statusline")
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
-    ---Save and restore the sessions
+    --- Save and restore the sessions
+    --- FIXME : how to control saving or not-saving config
     ----------------------------------------------------------------------------
     require("auto-session").setup {}
+    ----------------------------------------------------------------------------
 
     ---------------------------------------------------
     -- Telescope config
@@ -147,7 +152,11 @@ else
     require("telescope").load_extension "advanced_git_search"
     require("telescope").load_extension "noice"
     require("telescope").load_extension "fzf"
+    ----------------------------------------------------------------------------
 
+    ----------------------------------------------------------------------------
+    --- FIXME check what is this
+    ----------------------------------------------------------------------------
     require("img-clip").setup {}
     require("render-markdown").setup {}
 
@@ -157,9 +166,9 @@ else
     require("copilot").setup {}
     require("avante_lib").load()
     require("avante").setup {}
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
-    --
     --- Debugging setup for Python
     ----------------------------------------------------------------------------
     require("dap-python").setup("~/.virtualenvs/debugpy/bin/python", {
@@ -236,6 +245,7 @@ else
 
     dap.configurations.c = dap.configurations.cpp
     dap.configurations.rust = dap.configurations.cpp
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Symbol outline
@@ -254,6 +264,8 @@ else
     }
     require("symbols-outline").setup(opts)
     vim.keymap.set("n", "sym", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
+    vim.keymap.set("n", "<leader>ts", "<cmd>SymbolsOutline<CR>", { desc = "Toggle the symbol outline" })
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Terminal App
@@ -268,7 +280,9 @@ else
         ---},
     }
     vim.keymap.set("n", "ter", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
+    vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", { desc = "Toggle the terminal" })
     vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Noice notices
@@ -306,9 +320,11 @@ else
     function _G.get_wildmenu_key(key_wildmenu, key_regular)
         return vim.fn.wildmenumode() ~= 0 and key_wildmenu or key_regular
     end
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- FIXME : Need to check, what this does ?
+    --- A simple way to run and visualize code actions with Telescope.
     ----------------------------------------------------------------------------
     vim.keymap.set("n", "<leader>cq", function()
         require("tiny-code-action").code_action()
@@ -360,6 +376,7 @@ else
             "CursorMoved",
         },
     }
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Diffview
@@ -965,16 +982,19 @@ else
     --- Display underline all the words appearance as under cursor
     ----------------------------------------------------------------------------
     require("illuminate").configure {}
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Display column intellegently of column exceeds 80 char
     ----------------------------------------------------------------------------
     require("smartcolumn").setup()
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Display the key pressed on top right corner
     ----------------------------------------------------------------------------
     require("showkeys").open()
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Display the action-hint for the code to the lua line
@@ -1000,6 +1020,7 @@ else
     }
 
     require("fzf-lua").setup { "fzf-native" }
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     ---  highlight lines
@@ -1009,7 +1030,11 @@ else
             "*", -- Highlight all files, but customize some others.
         },
     }
+    ----------------------------------------------------------------------------
 
+    ----------------------------------------------------------------------------
+    ---  Autotagging HTML Tags
+    ----------------------------------------------------------------------------
     require("nvim-ts-autotag").setup {
         opts = {
             enable_close = true, -- Auto close tags
@@ -1017,6 +1042,7 @@ else
             enable_close_on_slash = false, -- Auto close on trailing </
         },
     }
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     ---  LSP Setup
@@ -1071,18 +1097,29 @@ else
     ---------------------------------------------------------------------------
     --- Custom command to update the mason
     ---------------------------------------------------------------------------
-
     require("mason-update-all").setup()
+    ---------------------------------------------------------------------------
 
+    ---------------------------------------------------------------------------
+    ---Lua line Config
+    ---------------------------------------------------------------------------
     vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
     vim.api.nvim_create_autocmd("User", {
         group = "lualine_augroup",
         pattern = "LspProgressStatusUpdated",
         callback = require("lualine").refresh,
     })
+    ---------------------------------------------------------------------------
 
+    ---------------------------------------------------------------------------
+    --- Lazygit Config
+    ---------------------------------------------------------------------------
     require("telescope").load_extension "lazygit"
+    ---------------------------------------------------------------------------
 
+    ---------------------------------------------------------------------------
+    --- Signature help config
+    ---------------------------------------------------------------------------
     local cfg = {
         floating_window_off_x = 5, -- adjust float windows x position.
         floating_window_off_y = function() -- adjust float windows y position. e.g. set to -2 can make floating window move up 2 lines
@@ -1104,6 +1141,7 @@ else
         end,
     }
     require("lsp_signature").setup(cfg)
+    ---------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     --- Cscope map : Still needs to be configured
@@ -1134,7 +1172,7 @@ else
 
     local group = vim.api.nvim_create_augroup("CscopeBuild", { clear = true })
     vim.api.nvim_create_autocmd("BufWritePost", {
-        pattern = { "*.c", "*.h", "*.cc", "*.cpp", "*.s", "*.S" },
+        pattern = { "*.hh", "*hpp", "*.c", "*.h", "*.cc", "*.cpp", "*.s", "*.S" },
         callback = function()
             vim.api.nvim_set_current_dir(get_project_root())
             vim.cmd "Cscope db build"
@@ -1142,7 +1180,11 @@ else
         group = group,
     })
     vim.keymap.set("n", "<leader>cb", ":Cscope db build<CR>", { desc = "build cscope database" })
+    ----------------------------------------------------------------------------
 
+    ----------------------------------------------------------------------------
+    --- Suggestion and autoCompletion
+    ----------------------------------------------------------------------------
     require("cmp.config.context").in_treesitter_capture "spell"
 
     ---  Drop down list for the search in the cmdline setup.
@@ -1178,6 +1220,7 @@ else
             { name = "buffer" },
         }),
     })
+    ----------------------------------------------------------------------------
 
     ---------------------------------------------------------------------------
     --- NULL-LS : checking spelling
@@ -1226,9 +1269,10 @@ else
         paths = { "/usr/share/dict/words" },
         exact_length = 2,
     }
+    ---------------------------------------------------------------------------
 
     ---------------------------------------------------------------------------
-    --- Diff 2 files
+    --- telescope based  Diff for 2 files
     ---------------------------------------------------------------------------
     require("telescope").load_extension "diff"
     vim.keymap.set("n", "<leader>d2", function()
@@ -1237,7 +1281,11 @@ else
     vim.keymap.set("n", "<leader>d1", function()
         require("telescope").extensions.diff.diff_current { hidden = true }
     end, { desc = "Compare file with current" })
+    ---------------------------------------------------------------------------
 
+    ---------------------------------------------------------------------------
+    --- Zen mode : use 'zen' command in normal mode
+    ---------------------------------------------------------------------------
     vim.keymap.set("n", "zen", function()
         require("focus").toggle_zen {
             zen = {
@@ -1249,7 +1297,35 @@ else
             },
         }
     end, { desc = "Toggle Zen Mode" })
+    ---------------------------------------------------------------------------
 
+    ---------------------------------------------------------------------------
+    --- Dimming of non-effective code. Use 'dim' command in normal mode
+    ---------------------------------------------------------------------------
     require("twilight.config").setup {}
     vim.keymap.set("n", "dim", "<cmd>Twilight<CR>", { desc = "Toggle Twilight mode" })
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    ---- Qucker list using <C-t>
+    ---------------------------------------------------------------------------
+    require("trouble").setup { focus = false } -- for default options, refer to the configuration section for custom setup.
+    local actions = require "telescope.actions"
+    local open_with_trouble = require("trouble.sources.telescope").open
+
+    -- Use this to add more results without clearing the trouble list
+    local add_to_trouble = require("trouble.sources.telescope").add
+
+    local telescope = require "telescope"
+
+    telescope.setup {
+        defaults = {
+            mappings = {
+                i = { ["<c-t>"] = open_with_trouble },
+                n = { ["<c-t>"] = open_with_trouble },
+            },
+        },
+    }
+    local config = require "fzf-lua.config"
+    local actions = require("trouble.sources.fzf").actions
 end
