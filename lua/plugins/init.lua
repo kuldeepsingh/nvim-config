@@ -2,18 +2,11 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         event = { "BufReadPre", "BufNewFile" },
+        opts = { ensure_installed = { "cpp", "python" } },
         config = function()
             require "configs.treesitter"
         end,
         run = ":TSUpdate",
-    },
-
-    {
-        "jose-elias-alvarez/null-ls.nvim",
-        event = "VeryLazy",
-        opts = function()
-            return require "configs.null-ls"
-        end,
     },
 
     {
@@ -101,27 +94,8 @@ return {
     },
 
     {
-        "Exafunction/codeium.nvim",
-        lazy = false,
-        -- event = "InsertEnter",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "hrsh7th/nvim-cmp",
-        },
-        config = function()
-            require("codeium").setup {}
-        end,
-    },
-
-    {
         "NvChad/nvim-colorizer.lua",
         event = "BufRead *",
-    },
-
-    {
-        "linrongbin16/lsp-progress.nvim",
-        event = "BufRead *",
-        config = config,
     },
 
     {
@@ -140,10 +114,10 @@ return {
         end,
     },
 
-    -- {
-    -- "neovim/nvim-lspconfig",
-    -- lazy = false,
-    -- },
+    {
+        "neovim/nvim-lspconfig",
+        lazy = false,
+    },
     -- {
     --     "neovim/nvim-lspconfig",
     --     event = { "BufReadPre", "BufNewFile" },
@@ -438,6 +412,8 @@ return {
         dependencies = {
             "WhoIsSethDaniel/mason-tool-installer.nvim",
         },
+        optional = false,
+        opts = { ensure_installed = { "codelldb" } },
         config = function()
             local mason = require "mason"
 
@@ -608,6 +584,13 @@ return {
 
     {
         "nvimdev/lspsaga.nvim",
+        config = function()
+            require("lspsaga").setup {}
+        end,
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter", -- optional
+            "nvim-tree/nvim-web-devicons", -- optional
+        },
     },
 
     {
@@ -1014,6 +997,9 @@ return {
         },
     },
 
+    ---------------------------------------------------------------------------
+    -- Quickfix list
+    ---------------------------------------------------------------------------
     {
         "folke/trouble.nvim",
         opts = { focus = true }, -- for default options, refer to the configuration section for custom setup.
@@ -1051,4 +1037,46 @@ return {
             },
         },
     },
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- Matching color brackets
+    ---------------------------------------------------------------------------
+    {
+        "HiPhish/rainbow-delimiters.nvim",
+    },
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- Nord - Best theme
+    ---------------------------------------------------------------------------
+    {
+        "gbprod/nord.nvim",
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require("nord").setup {}
+            vim.cmd.colorscheme "nord"
+        end,
+    },
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- Almost Monochrome theme
+    ---------------------------------------------------------------------------
+    {
+        "wnkz/monoglow.nvim",
+        lazy = false,
+        priority = 1000,
+        opts = {},
+    },
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    --  Maximize the windows split with "mt"
+    ---------------------------------------------------------------------------
+    {
+        "0x00-ketsu/maximizer.nvim",
+    },
+    ---------------------------------------------------------------------------
 }

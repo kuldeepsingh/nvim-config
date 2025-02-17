@@ -2,6 +2,10 @@ require "nvchad.options"
 
 vim.opt.cursorlineopt = "both" -- to enable cursorline!
 
+-- COLOR SCHEME
+vim.cmd [[colorscheme nord]]
+--vim.cmd [[colorscheme monoglow]]
+
 -- Indenting
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4

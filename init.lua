@@ -55,14 +55,13 @@ else
         local keyset = vim.keymap.set
         keyset("n", "<leader>rn", vim.lsp.buf.rename, {}) -- rename
         keyset("n", "<leader>ca", vim.lsp.buf.code_action, {}) -- code action
-
         keyset("n", "gd", vim.lsp.buf.definition, {}) -- global definition
         keyset("n", "gi", vim.lsp.buf.implementation, {}) -- global implementation
         keyset("n", "gr", require("telescope.builtin").lsp_references, {}) -- global references
         keyset("n", "K", vim.lsp.buf.hover, {}) -- global implementation
     end
 
-    local capabilities = require("cmp_nvim_lsp").default_capabilities()
+    local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
     -- Setup all of the LSPs
     require("lspconfig").lua_ls.setup { on_attach = on_attach, capabilities = capabilities }
@@ -84,7 +83,12 @@ else
         cmd = {
             "clangd",
             "--offset-encoding=utf-16",
+            "--background-index",
+            "--suggest-missing-includes",
+            "--clang-tidy",
+            -- "--compile-commands-dir=/home/localuser/test/build",
         },
+        filetypes = { "c", "cpp", "objc", "objcpp", "h", "hh", "cc" },
         init_options = {},
     }
 
@@ -1043,57 +1047,6 @@ else
         },
     }
     ----------------------------------------------------------------------------
-
-    ----------------------------------------------------------------------------
-    ---  LSP Setup
-    ----------------------------------------------------------------------------
-    require("lsp-progress").setup {
-        client_format = function(client_name, spinner, series_messages)
-            if #series_messages == 0 then
-                return nil
-            end
-            return {
-                name = client_name,
-                body = spinner .. " " .. table.concat(series_messages, ", "),
-            }
-        end,
-        format = function(client_messages)
-            --- @param name string
-            --- @param msg string?
-            --- @return string
-            local function stringify(name, msg)
-                return msg and string.format("%s %s", name, msg) or name
-            end
-
-            local sign = ""
-            local lsp_clients = vim.lsp.get_active_clients()
-            local messages_map = {}
-            for _, climsg in ipairs(client_messages) do
-                messages_map[climsg.name] = climsg.body
-            end
-
-            if #lsp_clients > 0 then
-                table.sort(lsp_clients, function(a, b)
-                    return a.name < b.name
-                end)
-                local builder = {}
-                for _, cli in ipairs(lsp_clients) do
-                    if type(cli) == "table" and type(cli.name) == "string" and string.len(cli.name) > 0 then
-                        if messages_map[cli.name] then
-                            table.insert(builder, stringify(cli.name, messages_map[cli.name]))
-                        else
-                            table.insert(builder, stringify(cli.name))
-                        end
-                    end
-                end
-                if #builder > 0 then
-                    return sign .. " " .. table.concat(builder, ", ")
-                end
-            end
-            return ""
-        end,
-    }
-
     ---------------------------------------------------------------------------
     --- Custom command to update the mason
     ---------------------------------------------------------------------------
@@ -1119,6 +1072,7 @@ else
 
     ---------------------------------------------------------------------------
     --- Signature help config
+    --- FIXME : Check if this is even working
     ---------------------------------------------------------------------------
     local cfg = {
         floating_window_off_x = 5, -- adjust float windows x position.
@@ -1160,6 +1114,23 @@ else
             },
         },
     }
+    -- 's'   symbol: find all references to the token under cursor
+    -- 'g'   global: find global definition(s) of the token under cursor
+    -- 'c'   calls:  find all calls to the function name under cursor
+    -- 't'   text:   find all instances of the text under cursor
+    -- 'e'   egrep:  egrep search for the word under cursor
+    -- 'f'   file:   open the filename under cursor
+    -- 'i'   includes: find files that include the filename under cursor
+    -- 'd'   called: find functions that function under cursor calls
+    vim.keymap.set({ "n", "v" }, "cgs", "<cmd>Cs f s<cr>")
+    vim.keymap.set({ "n", "v" }, "cgg", "<cmd>Cs f g<cr>")
+    vim.keymap.set({ "n", "v" }, "cgc", "<cmd>Cs f c<cr>")
+    vim.keymap.set({ "n", "v" }, "cgt", "<cmd>Cs f t<cr>")
+    vim.keymap.set({ "n", "v" }, "cge", "<cmd>Cs f e<cr>")
+    vim.keymap.set({ "n", "v" }, "cgf", "<cmd>Cs f f<cr>")
+    vim.keymap.set({ "n", "v" }, "cgi", "<cmd>Cs f i<cr>")
+    vim.keymap.set({ "n", "v" }, "cgd", "<cmd>Cs f d<cr>")
+
     vim.api.nvim_create_user_command("TT", function(opts)
         vim.cmd("Cstag " .. opts.args)
     end, { nargs = 1 })
@@ -1179,7 +1150,6 @@ else
         end,
         group = group,
     })
-    vim.keymap.set("n", "<leader>cb", ":Cscope db build<CR>", { desc = "build cscope database" })
     ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
@@ -1223,18 +1193,8 @@ else
     ----------------------------------------------------------------------------
 
     ---------------------------------------------------------------------------
-    --- NULL-LS : checking spelling
-    ---------------------------------------------------------------------------
-    local null_ls = require "null-ls"
-
-    null_ls.setup {
-        sources = {
-            null_ls.builtins.formatting.stylua,
-            null_ls.builtins.diagnostics.eslint,
-            null_ls.builtins.completion.spell,
-        },
-    }
-
+    -- FIXME :
+    ----------------------------------------------------------------------------
     require("cmp").setup {
         snippet = {
             expand = function(args)
@@ -1328,4 +1288,51 @@ else
     }
     local config = require "fzf-lua.config"
     local actions = require("trouble.sources.fzf").actions
+
+    vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+        callback = function()
+            vim.cmd [[Trouble qflist open]]
+        end,
+    })
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- This module contains a number of default definitions
+    ---------------------------------------------------------------------------
+    local rainbow_delimiters = require "rainbow-delimiters"
+
+    ---@type rainbow_delimiters.config
+    vim.g.rainbow_delimiters = {
+        strategy = {
+            [""] = rainbow_delimiters.strategy["global"],
+            vim = rainbow_delimiters.strategy["local"],
+        },
+        query = {
+            [""] = "rainbow-delimiters",
+            lua = "rainbow-blocks",
+        },
+        priority = {
+            [""] = 110,
+            lua = 210,
+        },
+        highlight = {
+            "RainbowDelimiterRed",
+            "RainbowDelimiterYellow",
+            "RainbowDelimiterBlue",
+            "RainbowDelimiterOrange",
+            "RainbowDelimiterGreen",
+            "RainbowDelimiterViolet",
+            "RainbowDelimiterCyan",
+        },
+    }
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- global lsp mappings
+    vim.keymap.set("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
+   ---------------------------------------------------------------------------
+   
+   ------------------------------------------------------------------------------
+    require("maximizer").setup {}
+    -----------------------------------------------------------------------------
 end

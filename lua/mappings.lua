@@ -56,3 +56,7 @@ map("n", "<C-c>", "yy", opts)
 
 -- ctrl + v to paste yanked files
 map("n", "<C-v>", "p", opts)
+
+vim.api.nvim_set_keymap("n", "mt", '<cmd>lua require("maximizer").toggle()<CR>', { silent = true, noremap = true })
+vim.api.nvim_set_keymap("n", "mm", '<cmd>lua require("maximizer").maximize()<CR>', { silent = true, noremap = true })
+vim.api.nvim_set_keymap("n", "mr", '<cmd>lua require("maximizer").restore()<CR>', { silent = true, noremap = true })
