@@ -657,20 +657,6 @@ return {
     },
 
     {
-        "leath-dub/snipe.nvim",
-        keys = {
-            {
-                "gb",
-                function()
-                    require("snipe").open_buffer_menu()
-                end,
-                desc = "Open Snipe buffer menu",
-            },
-        },
-        opts = {},
-    },
-
-    {
         "vhyrro/luarocks.nvim",
         priority = 1000, -- Very high priority is required, luarocks.nvim should run as the first plugin in your config.
         config = true,
@@ -1086,7 +1072,7 @@ return {
     {
         "EL-MASTOR/bufferlist.nvim",
         lazy = true,
-        keys = { { "<Leader>bb", ":BufferList<CR>", desc = "Open bufferlist" } },
+        keys = { { "gb", ":BufferList<CR>", desc = "Open bufferlist" } },
         dependencies = "nvim-tree/nvim-web-devicons",
         cmd = "BufferList",
         opts = {
