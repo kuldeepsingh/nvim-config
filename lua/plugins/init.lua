@@ -330,6 +330,8 @@ return {
     {
         "nvim-lualine/lualine.nvim",
         dependencies = {
+            "dokwork/lualine-ex",
+            "nvim-lua/plenary.nvim",
             "nvim-tree/nvim-web-devicons",
         },
     },
@@ -1080,5 +1082,27 @@ return {
             -- or leave it empty to use the default settings
             -- refer to the configuration section below
         },
+    },
+
+    ---------------------------------------------------------------------------
+    --  Word highlighting if pressed "w" or "b" automatically
+    ---------------------------------------------------------------------------
+    {
+        "luiscassih/AniKakoune",
+        event = "VeryLazy",
+        config = function()
+            require("AniMotion").setup {
+                mode = "helix",
+                clear_keys = { "<C-c>" },
+                color = { bg = "#655A42" },
+            }
+        end,
+    },
+
+    {
+        "linrongbin16/lsp-progress.nvim",
+        config = function()
+            require("lsp-progress").setup()
+        end,
     },
 }
