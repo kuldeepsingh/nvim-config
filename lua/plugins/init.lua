@@ -10,6 +10,12 @@ return {
     },
 
     {
+        "L3MON4D3/LuaSnip",
+        dependencies = { "rafamadriz/friendly-snippets" },
+        build = "make install_jsregexp",
+    },
+
+    {
         "hrsh7th/nvim-cmp",
         lazy = false,
         priority = 100,
@@ -1104,5 +1110,12 @@ return {
         config = function()
             require("lsp-progress").setup()
         end,
+    },
+
+    {
+        "j-hui/fidget.nvim",
+        opts = {
+            -- options
+        },
     },
 }

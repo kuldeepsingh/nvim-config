@@ -10,8 +10,8 @@ else
     --- LSP install
     ----------------------------------------------------------------------------
     vim.call "plug#begin"
-    Plug "hrsh7th/cmp-vsnip"
-    Plug "hrsh7th/vim-vsnip"
+    --Plug "hrsh7th/cmp-vsnip"
+    --Plug "hrsh7th/vim-vsnip"
     vim.call "plug#end"
 
     vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
@@ -1004,8 +1004,14 @@ else
     --- Display the action-hint for the code to the lua line
     ----------------------------------------------------------------------------
     require("lualine").setup {
+        options = {
+            theme = "auto",
+        },
         sections = {
-            lualine_a = { "mode" },
+            lualine_a = {
+                "mode",
+                { "ex.lsp.all", only_attached = false, notify_enabled = true, notify_hl = "Comment" },
+            },
             lualine_b = { "diff", "diagnostics" },
             lualine_c = { { "filename", path = 1 } },
             lualine_x = {
@@ -1192,6 +1198,26 @@ else
     })
     ----------------------------------------------------------------------------
 
+    local ls = require "luasnip"
+
+    vim.keymap.set({ "i" }, "<C-K>", function()
+        ls.expand()
+    end, { silent = true })
+    vim.keymap.set({ "i", "s" }, "<C-L>", function()
+        ls.jump(1)
+    end, { silent = true })
+    vim.keymap.set({ "i", "s" }, "<C-J>", function()
+        ls.jump(-1)
+    end, { silent = true })
+
+    vim.keymap.set({ "i", "s" }, "<C-E>", function()
+        if ls.choice_active() then
+            ls.change_choice(1)
+        end
+    end, { silent = true })
+
+    require("luasnip.loaders.from_vscode").lazy_load()
+
     ---------------------------------------------------------------------------
     -- FIXME :
     ----------------------------------------------------------------------------
@@ -1339,4 +1365,44 @@ else
     ---------------------------------------------------------------------------
     require("maximizer").setup {}
     -----------------------------------------------------------------------------
+
+    require("lsp-progress").setup {
+        decay = 1200,
+        series_format = function(title, message, percentage, done)
+            local builder = {}
+            local has_title = false
+            local has_message = false
+            if type(title) == "string" and string.len(title) > 0 then
+                table.insert(builder, title)
+                has_title = true
+            end
+            if type(message) == "string" and string.len(message) > 0 then
+                table.insert(builder, message)
+                has_message = true
+            end
+            if percentage and (has_title or has_message) then
+                table.insert(builder, string.format("(%.0f%%)", percentage))
+            end
+            return { msg = table.concat(builder, " "), done = done }
+        end,
+        client_format = function(client_name, spinner, series_messages)
+            if #series_messages == 0 then
+                return nil
+            end
+            local builder = {}
+            local done = true
+            for _, series in ipairs(series_messages) do
+                if not series.done then
+                    done = false
+                end
+                table.insert(builder, series.msg)
+            end
+            if done then
+                spinner = "✓" -- replace your check mark
+            end
+            return "[" .. client_name .. "] " .. spinner .. " " .. table.concat(builder, ", ")
+        end,
+    }
+
+    require("telescope").load_extension "fidget"
 end
