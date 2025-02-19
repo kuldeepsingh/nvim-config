@@ -15,7 +15,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
 # If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+#ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -90,7 +90,7 @@ if [ "$TMUX" = "" ]; then tmux; fi
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
-#   export EDITOR='nvim'
+export EDITOR='nvim'
 # fi
 
 # Compilation flags
@@ -116,17 +116,44 @@ alias gdrive="cd gdrive"
 alias dlog=zk
 alias vi=nvim
 alias ubuntu="sshpass -p "kuldeeps" ssh -p 2580 -o StrictHostKeyChecking=accept-new kuldeeps@localhost"
-alias ubuntu1="sshpass -p "kuldeeps" ssh -p 2680 -o StrictHostKeyChecking=accept-new kuldeeps@localhost"
-alias ubuntu2="sshpass -p "kuldeeps" ssh -p 2780 -o StrictHostKeyChecking=accept-new kuldeeps@localhost"
-alias ubuntu3="sshpass -p "kuldeeps" ssh -p 2880 -o StrictHostKeyChecking=accept-new kuldeeps@localhost"
 alias python=python3
 alias xnview="open -a XnviewMP"
 alias vlc="open -a vlc"
 alias virtualbox="open -a virtualbox"
 alias bc="open -a \"beyond compare\""
 alias whatsapp="open -a whatsapp"
-alias ff=fzf
+alias ffvi="fzf --preview='bat --color=always {})'"
 alias ps="ps -ef | fzf | awk '{print $2}' | xargs kill -9"
+alias nvimc="cd /Users/kuldeepsingh/Downloads/nvim-checking/nvim-config"
+alias cdnvim="cd /Users/kuldeepsingh/.config/nvim"
+alias home="cd /Users/kuldeepsingh/"
+alias py="cd /Users/kuldeepsingh/learning/coding/km-2-miles/python"
+alias cpp="cd /Users/kuldeepsingh/learning/coding/km-2-miles/cpp"
+alias c="cd /Users/kuldeepsingh/learning/coding/km-2-miles/c"
+alias datapath="cd /Users/kuldeepsingh/code_study/dataplane-stack/"
+
+# cc - cd with fuzzy finder
+# Usage: cc [path]
+cc() {
+    local fd_options fzf_options target
+
+    fd_options=(
+        --hidden
+    )
+
+    fzf_options=(
+        --preview='tree -L 1 {}'
+        --bind=ctrl-space:toggle-preview
+        --exit-0
+    )
+
+    target="$(fd . "${1:-.}" "${fd_options[@]}" | fzf "${fzf_options[@]}")"
+
+    test -f "$target" && target="${target%/*}"
+
+    cd "$target" || return 1
+}
+
 
 if command -v eza &>/dev/null; then
     alias ll='eza -lhg'
@@ -147,6 +174,17 @@ export HSTR_TIOCSTI=y
 export OPENAI_API_CHAT_COMPLETIONS=https://api.githubcopilot.com
 export OPENAI_API_KEY=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
 
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
+
+
 if [ -f ~/.fzf.zsh ]; then
 
     # After installing fzf with brew, you have to run the install script
@@ -160,12 +198,27 @@ if [ -f ~/.fzf.zsh ]; then
     --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 
     # Use :: as the trigger sequence instead of the default **
-    export FZF_COMPLETION_TRIGGER='::'
+    export FZF_COMPLETION_TRIGGER='**'
 
     # Eldritch Colorscheme / theme
     # https://github.com/eldritch-theme/fzf
     export FZF_DEFAULT_OPTS='--color=fg:#ebfafa,bg:#09090d,hl:#37f499 --color=fg+:#ebfafa,bg+:#0D1116,hl+:#37f499 --color=info:#04d1f9,prompt:#04d1f9,pointer:#7081d0 --color=marker:#7081d0,spinner:#f7c67f,header:#323449'
   fi
+
+export FZF_DEFAULT_OPTS='--prompt="🔭 " --height 80% --layout=reverse --border'
+
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/" --glob "!node_modules/" --glob "!vendor/" --glob "!undo/" --glob "!plugged/"'
+#
+# Add Standard GNU Tools to path
+# see: https://gist.github.com/skyzyx/3438280b18e4f7c490db8a2a2ca0b9da
+if type brew &>/dev/null; then
+  HOMEBREW_PREFIX=$(brew --prefix)
+  NEWPATH=${PATH}
+  # gnubin; gnuman
+  for d in ${HOMEBREW_PREFIX}/opt/*/libexec/gnubin; do NEWPATH=$d:$NEWPATH; done
+  for d in ${HOMEBREW_PREFIX}/opt/*/libexec/gnuman; do export MANPATH=$d:$MANPATH; done
+ export PATH=$(echo ${NEWPATH} | tr ':' '\n' | cat -n | sort -uk2 | sort -n | cut -f2- | xargs | tr ' ' ':')
+fi
 
 autoload bashcompinit && bashcompinit
 source $(brew --prefix)/etc/bash_completion.d/az
@@ -179,3 +232,4 @@ source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
 export ZK_NOTEBOOK_DIR=/Users/kuldeepsingh/notes
 export BYOBU_CONFIG_DIR=/Users/kuldeepsingh/.config/byobu 
+
