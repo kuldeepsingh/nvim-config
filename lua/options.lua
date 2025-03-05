@@ -3,8 +3,10 @@ require "nvchad.options"
 vim.opt.cursorlineopt = "both" -- to enable cursorline!
 
 -- COLOR SCHEME
-vim.cmd [[colorscheme nord]]
+--vim.cmd [[colorscheme nord]]
 --vim.cmd [[colorscheme monoglow]]
+--vim.cmd [[colorscheme auto]]
+vim.cmd [[colorscheme coal]]
 
 -- Indenting
 vim.opt.shiftwidth = 4
@@ -30,6 +32,13 @@ vim.opt.foldlevelstart = 1
 vim.opt.foldenable = true
 vim.o.completeopt = "menuone,noselect"
 vim.opt_local.spell = true
+
+-- Disable default language support
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python_provider = 0
+vim.g.loaded_python3_provider = 0
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",

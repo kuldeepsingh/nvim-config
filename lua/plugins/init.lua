@@ -793,12 +793,12 @@ return {
         dependencies = { { "nvim-tree/nvim-web-devicons" } },
     },
 
-    {
-        "nvzone/showkeys",
-        cmd = "ShowkeysToggle",
-        event = "VimEnter",
-        opt = { position = "top-right", show_count = true },
-    },
+    -- {
+    --     "nvzone/showkeys",
+    --     cmd = "ShowkeysToggle",
+    --     event = "VimEnter",
+    --     opt = { position = "top-right", show_count = true },
+    -- },
     {
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
@@ -1116,6 +1116,36 @@ return {
         "j-hui/fidget.nvim",
         opts = {
             -- options
+        },
+    },
+
+    {
+        "nvim-java/nvim-java",
+    },
+
+    {
+        "hedyhli/outline.nvim",
+    },
+
+    {
+        "cranberry-clockworks/coal.nvim",
+        config = function()
+            require("coal").setup()
+        end,
+    },
+
+    {
+        "danymat/neogen",
+        config = true,
+        -- Uncomment next line if you want to follow only stable versions
+        -- version = "*"
+    },
+
+    {
+        "jeangiraldoo/codedocs.nvim",
+        -- Remove the 'dependencies' section if you don't plan on using nvim-treesitter
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
         },
     },
 }

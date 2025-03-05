@@ -9,11 +9,6 @@ else
     ----------------------------------------------------------------------------
     --- LSP install
     ----------------------------------------------------------------------------
-    vim.call "plug#begin"
-    --Plug "hrsh7th/cmp-vsnip"
-    --Plug "hrsh7th/vim-vsnip"
-    vim.call "plug#end"
-
     vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
     vim.g.mapleader = " "
 
@@ -47,7 +42,8 @@ else
     require "options"
     require "mappings"
     ----------------------------------------------------------------------------
-
+    require("java").setup()
+    require("lspconfig").jdtls.setup {}
     ----------------------------------------------------------------------------
     -- Set up nvim-cmp.
     ----------------------------------------------------------------------------
@@ -105,7 +101,7 @@ else
             "bashls", -- Bash
             "pyright", --Python
             "taplo", --toml
-            "gopls",
+            "gopls", -- Go language
         },
     }
     ----------------------------------------------------------------------------
@@ -175,7 +171,7 @@ else
     ----------------------------------------------------------------------------
     --- Debugging setup for Python
     ----------------------------------------------------------------------------
-    require("dap-python").setup("~/.virtualenvs/debugpy/bin/python", {
+    require("dap-python").setup("~/learning/coding/python/.venv//bin/python", {
         include_configs = true,
         console = "integratedTerminal",
         pythonPath = nil,
@@ -997,7 +993,7 @@ else
     ----------------------------------------------------------------------------
     --- Display the key pressed on top right corner
     ----------------------------------------------------------------------------
-    require("showkeys").open()
+    --require("showkeys").open()
     ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
@@ -1129,7 +1125,7 @@ else
     -- 'i'   includes: find files that include the filename under cursor
     -- 'd'   called: find functions that function under cursor calls
     vim.keymap.set({ "n", "v" }, "cgs", "<cmd>Cs f s<cr>")
-    vim.keymap.set({ "n", "v" }, "cgg", "<cmd>Cs f g<cr>")
+    vim.keymap.set({ "n", "v" }, "cg]", "<cmd>Cs f g<cr>")
     vim.keymap.set({ "n", "v" }, "cgc", "<cmd>Cs f c<cr>")
     vim.keymap.set({ "n", "v" }, "cgt", "<cmd>Cs f t<cr>")
     vim.keymap.set({ "n", "v" }, "cge", "<cmd>Cs f e<cr>")
@@ -1405,4 +1401,12 @@ else
     }
 
     require("telescope").load_extension "fidget"
+
+    vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
+    require("outline").setup {}
+
+    vim.keymap.set("n", "<leader>kc", require("codedocs").insert_docs, { desc = "Insert docstring" })
+    require("codedocs").setup {
+        default_styles = { python = "reST" },
+    }
 end
