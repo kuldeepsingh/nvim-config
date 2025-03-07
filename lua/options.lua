@@ -7,6 +7,8 @@ vim.opt.cursorlineopt = "both" -- to enable cursorline!
 --vim.cmd [[colorscheme monoglow]]
 --vim.cmd [[colorscheme auto]]
 vim.cmd [[colorscheme coal]]
+--vim.cmd "highlight WinSeparator guifg=#ffaa22"
+vim.o.guifont = "Source Code Pro:h12:#h-slight"
 
 -- Indenting
 vim.opt.shiftwidth = 4
@@ -193,9 +195,3 @@ vim.cmd [[ autocmd BufEnter * silent! lcd %:p:h ]]
 -- end,
 -- group = group,
 -- })
-
--- undo tree
-vim.keymap.set("n", "undo", "<cmd>Telescope undo<cr>")
-
--- Toggle maximizing the current window:
-vim.keymap.set("n", "<leader>az", "<Cmd>lua require('maximize').toggle()<CR>")

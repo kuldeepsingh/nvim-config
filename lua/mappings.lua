@@ -57,9 +57,19 @@ map("n", "<C-c>", "yy", opts)
 -- ctrl + v to paste yanked files
 map("n", "<C-v>", "p", opts)
 
+-- Maximize current buffer even in diff buffers
 vim.api.nvim_set_keymap(
     "n",
     "<leader>z",
     '<cmd>lua require("maximizer").toggle()<CR>',
     { silent = true, noremap = true }
 )
+
+-- Map CTRL-Q to :bd (buffer delete)
+vim.api.nvim_set_keymap("n", "<C-q>", ":bd<CR>", { noremap = true, silent = true })
+
+-- undo tree
+vim.keymap.set("n", "undo", "<cmd>Telescope undo<cr>")
+
+-- Toggle maximizing the current window:
+vim.keymap.set("n", "<leader>az", "<Cmd>lua require('maximize').toggle()<CR>")

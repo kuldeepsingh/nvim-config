@@ -1362,6 +1362,9 @@ else
     require("maximizer").setup {}
     -----------------------------------------------------------------------------
 
+    ------------------------------------------------------------------------------
+    ---  LSP Progress
+    ---------------------------------------------------------------------------
     require("lsp-progress").setup {
         decay = 1200,
         series_format = function(title, message, percentage, done)
@@ -1399,14 +1402,92 @@ else
             return "[" .. client_name .. "] " .. spinner .. " " .. table.concat(builder, ", ")
         end,
     }
+    ---------------------------------------------------------------------------
 
     require("telescope").load_extension "fidget"
 
-    vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
+    ---------------------------------------------------------------------------
+    --- Symbol Outline
+    ---------------------------------------------------------------------------
     require("outline").setup {}
+    vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
+    ---------------------------------------------------------------------------
 
-    vim.keymap.set("n", "<leader>kc", require("codedocs").insert_docs, { desc = "Insert docstring" })
+    ---------------------------------------------------------------------------
+    --- function header documentation
+    ---------------------------------------------------------------------------
     require("codedocs").setup {
         default_styles = { python = "reST" },
     }
+    vim.keymap.set("n", "<leader>kc", require("codedocs").insert_docs, { desc = "Insert docstring" })
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    --- code running from Neovim
+    ---------------------------------------------------------------------------
+    require("runner").setup {
+        position = "bottom", -- position of the terminal window when using the shell_handler
+        -- can be: top, left, right, bottom
+        -- will be overwritten when using the telescope mapping to open horizontally or vertically
+
+        width = 80, -- width of window when position is left or right
+        height = 10, -- height of window when position is top or bottom
+
+        handlers = {}, -- discussed in the next section
+    }
+    vim.keymap.set("n", "<leader><space>", require("runner").run)
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    --- code running from Neovim
+    ---------------------------------------------------------------------------
+    require("interestingwords").setup {
+        colors = { "#ffaa11", "#a21100", "#d140ff", "#b88823", "#ffa2f4", "#6f2cff" },
+        search_count = true,
+        navigation = true,
+        scroll_center = true,
+        search_key = "<leader>m",
+        cancel_search_key = "<leader>M",
+        color_key = "<leader>k",
+        cancel_color_key = "<leader>K",
+        select_mode = "loop", -- random or loop
+    }
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    ---  Transpose thwe windows
+    ---  FIXME : Currently it is not working
+    ---------------------------------------------------------------------------
+    vim.keymap.set("n", "<C-w><C-t>", "<Cmd>VentanaTranspose<CR>")
+    vim.keymap.set("n", "<C-w><C-f>", "<Cmd>VentanaShift<CR>")
+    vim.keymap.set("n", "<C-w>f", "<Cmd>VentanaShiftMaintainLinear<CR>")
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    --- trim Additional Blank lines
+    ---------------------------------------------------------------------------
+    require("trim").setup {
+        -- if you want to ignore markdown file.
+        -- you can specify filetypes.
+        ft_blocklist = { "markdown" },
+
+        -- if you want to remove multiple blank lines
+        patterns = {
+            [[%s/\(\n\n\)\n\+/\1/]], -- replace multiple blank lines with a single line
+        },
+
+        -- if you want to disable trim on write by default
+        trim_on_write = false,
+
+        -- highlight trailing spaces
+        highlight = true,
+    }
+    vim.keymap.set("n", "trim", "<Cmd>Trim<CR>")
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    ---  Open Link  using "link"
+    ---------------------------------------------------------------------------
+    require("url-open").setup()
+    vim.keymap.set("n", "gx", "<esc>:URLOpenUnderCursor<cr>")
 end
