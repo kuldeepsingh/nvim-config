@@ -1464,30 +1464,25 @@ else
     ---------------------------------------------------------------------------
 
     ---------------------------------------------------------------------------
-    --- trim Additional Blank lines
-    ---------------------------------------------------------------------------
-    require("trim").setup {
-        -- if you want to ignore markdown file.
-        -- you can specify filetypes.
-        ft_blocklist = { "markdown" },
-
-        -- if you want to remove multiple blank lines
-        patterns = {
-            [[%s/\(\n\n\)\n\+/\1/]], -- replace multiple blank lines with a single line
-        },
-
-        -- if you want to disable trim on write by default
-        trim_on_write = false,
-
-        -- highlight trailing spaces
-        highlight = true,
-    }
-    vim.keymap.set("n", "trim", "<Cmd>Trim<CR>")
-    ---------------------------------------------------------------------------
-
-    ---------------------------------------------------------------------------
     ---  Open Link  using "link"
     ---------------------------------------------------------------------------
     require("url-open").setup()
     vim.keymap.set("n", "gx", "<esc>:URLOpenUnderCursor<cr>")
+    ---------------------------------------------------------------------------
+
+    require("leetcode").setup { lang = "python3" }
+    -- require("leetcode.config").setup()
+    -- require("leetcode.command").setup()
+    -- require("leetcode.theme").setup()
+
+    ---------------------------------------------------------------------------
+    --- Track of the config files for nvim modifications in days
+    ---------------------------------------------------------------------------
+    require("ohne-accidents").setup {
+        welcomeOnStartup = true,
+        api = "notify",
+        multiLine = false,
+    }
+    vim.api.nvim_set_keymap("n", "<leader>oh", ":OhneAccidents<CR>", { noremap = true, silent = true })
+    ---------------------------------------------------------------------------
 end

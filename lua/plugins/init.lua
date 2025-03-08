@@ -1166,11 +1166,6 @@ return {
     },
 
     {
-        "cappyzawa/trim.nvim",
-        opts = {},
-    },
-
-    {
         "sontungexpt/url-open",
         event = "VeryLazy",
         cmd = "URLOpenUnderCursor",
@@ -1181,5 +1176,33 @@ return {
             end
             url_open.setup {}
         end,
+    },
+
+    {
+        "kawre/leetcode.nvim",
+        build = ":TSUpdate html", -- if you have `nvim-treesitter` installed
+        dependencies = {
+            "nvim-telescope/telescope.nvim",
+            -- "ibhagwan/fzf-lua",
+            "nvim-lua/plenary.nvim",
+            "MunifTanjim/nui.nvim",
+        },
+        opts = {
+            -- configuration goes here
+        },
+    },
+
+    {
+        "blumaa/ohne-accidents.nvim",
+        event = "UIEnter", -- Optional, but recommended event if you want to lazy load the plugin.
+        ---@type OhneAccidentsConfig
+        opts = {}, -- Setting this to {} will use the default configuration and load the plugin.
+        keys = {
+            {
+                "<leader>oh",
+                ":OhneAccidents<CR>",
+                desc = "Time since last config change",
+            },
+        },
     },
 }
