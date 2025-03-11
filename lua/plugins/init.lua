@@ -199,7 +199,8 @@ return {
                     java = { "google-java-format" },
                     kotlin = { "ktlint" },
                     ruby = { "standardrb" },
-                    markdown = { { "prettierd", "prettier", stop_after_first = true } },
+                    -- FIXME: Below gives error for the text file on save
+                    --markdown = { { "prettierd", "prettier", stop_after_first = true } },
                     erb = { "htmlbeautifier" },
                     html = { "htmlbeautifier" },
                     bash = { "beautysh" },
@@ -793,12 +794,13 @@ return {
         dependencies = { { "nvim-tree/nvim-web-devicons" } },
     },
 
-    -- {
-    --     "nvzone/showkeys",
-    --     cmd = "ShowkeysToggle",
-    --     event = "VimEnter",
-    --     opt = { position = "top-right", show_count = true },
-    -- },
+    {
+        "nvzone/showkeys",
+        cmd = "ShowkeysToggle",
+        event = "VimEnter",
+        opt = { position = "top-right", show_count = true },
+    },
+
     {
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
@@ -1204,5 +1206,26 @@ return {
                 desc = "Time since last config change",
             },
         },
+    },
+
+    {
+        "nvim-neorg/neorg",
+        build = ":Neorg sync-parsers",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("neorg").setup {
+                load = {
+                    ["core.defaults"] = {}, -- Loads default behaviour
+                    ["core.concealer"] = {}, -- Adds pretty icons to your documents
+                    ["core.dirman"] = { -- Manages Neorg workspaces
+                        config = {
+                            workspaces = {
+                                notes = "~/neorg-notes",
+                            },
+                        },
+                    },
+                },
+            }
+        end,
     },
 }
