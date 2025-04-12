@@ -10,12 +10,12 @@ vim.cmd [[colorscheme coal]]
 --vim.cmd "highlight WinSeparator guifg=#ffaa22"
 if vim.g.neovide then
     vim.o.guifont = "Source Code Pro:h18:#h-slight"
-    vim.g.neovide_scroll_animation_length = 0.2
+    vim.g.neovide_scroll_animation_length = 0.1
     vim.g.neovide_confirm_quit = true
     vim.g.neovide_cursor_vfx_mode = "pixiedust"
-    vim.g.neovide_cursor_short_animation_length = 0.02
-    vim.g.neovide_cursor_trail_size = 0.5
-    vim.g.neovide_cursor_animation_length = 0.100
+    vim.g.neovide_cursor_short_animation_length = 0.01
+    vim.g.neovide_cursor_trail_size = 0.2
+    vim.g.neovide_cursor_animation_length = 0.050
     vim.g.neovide_fullscreen = true
 end
 
