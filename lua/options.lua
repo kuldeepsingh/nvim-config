@@ -8,7 +8,16 @@ vim.opt.cursorlineopt = "both" -- to enable cursorline!
 --vim.cmd [[colorscheme auto]]
 vim.cmd [[colorscheme coal]]
 --vim.cmd "highlight WinSeparator guifg=#ffaa22"
-vim.o.guifont = "Source Code Pro:h12:#h-slight"
+if vim.g.neovide then
+    vim.o.guifont = "Source Code Pro:h18:#h-slight"
+    vim.g.neovide_scroll_animation_length = 0.2
+    vim.g.neovide_confirm_quit = true
+    vim.g.neovide_cursor_vfx_mode = "pixiedust"
+    vim.g.neovide_cursor_short_animation_length = 0.02
+    vim.g.neovide_cursor_trail_size = 0.5
+    vim.g.neovide_cursor_animation_length = 0.100
+    vim.g.neovide_fullscreen = true
+end
 
 -- Indenting
 vim.opt.shiftwidth = 4
@@ -32,7 +41,7 @@ vim.opt.foldcolumn = "1"
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 1
 vim.opt.foldenable = true
-vim.o.completeopt = "menuone,noselect"
+vim.opt.completeopt = "menuone,noselect"
 vim.opt_local.spell = true
 
 -- Disable default language support
