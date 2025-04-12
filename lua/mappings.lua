@@ -73,3 +73,8 @@ vim.keymap.set("n", "undo", "<cmd>Telescope undo<cr>")
 
 -- Toggle maximizing the current window:
 vim.keymap.set("n", "<leader>az", "<Cmd>lua require('maximize').toggle()<CR>")
+local opts = { noremap = true, silent = true }
+
+vim.keymap.set("n", "<C-+>", "<cmd>:GUIFontSizeUp<CR>", opts)
+vim.keymap.set("n", "<C-->", "<cmd>:GUIFontSizeDown<CR>", opts)
+vim.keymap.set("n", "<C-0>", "<cmd>:GUIFontSizeSet<CR>", opts)

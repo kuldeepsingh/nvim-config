@@ -123,15 +123,12 @@ return {
     {
         "neovim/nvim-lspconfig",
         lazy = false,
+        event = { "BufReadPre", "BufNewFile" },
+        config = function()
+            require("nvchad.configs.lspconfig").defaults()
+            require "configs.lspconfig"
+        end,
     },
-    -- {
-    --     "neovim/nvim-lspconfig",
-    --     event = { "BufReadPre", "BufNewFile" },
-    --     config = function()
-    --         require("nvchad.configs.lspconfig").defaults()
-    --         require "configs.lspconfig"
-    --     end,
-    -- },
 
     {
         "williamboman/mason-lspconfig.nvim",
@@ -500,10 +497,10 @@ return {
                 name = "lldb server",
                 host = "127.0.0.1",
                 type = "server",
-                port = "13387",
+                port = "15387",
                 executable = {
-                    command = "/Users/kuldeepsingh/.local/share/nvim/mason/bin/codelldb",
-                    args = { "--port", "13387" },
+                    command = "/Users/kuldeeps/.local/share/nvim/mason/bin/codelldb",
+                    args = { "--port", "15387" },
                 },
             }
         end,
@@ -804,6 +801,7 @@ return {
     {
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
+        event = "VimEnter",
         opts = {
             -- your configuration comes here
             -- or leave it empty to use the default settings
@@ -1164,10 +1162,6 @@ return {
     },
 
     {
-        "jyscao/ventana.nvim",
-    },
-
-    {
         "sontungexpt/url-open",
         event = "VeryLazy",
         cmd = "URLOpenUnderCursor",
@@ -1227,5 +1221,16 @@ return {
                 },
             }
         end,
+    },
+
+    {
+        "jyscao/ventana.nvim", -- correct plugin repository
+        event = "VimEnter",
+    },
+
+    {
+        "ktunprasert/gui-font-resize.nvim",
+        event = "VimEnter",
+        config = true,
     },
 }

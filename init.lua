@@ -993,7 +993,7 @@ else
     ---------------------------------------------------------------------------
     --- Display the key pressed on top right corner
     ---------------------------------------------------------------------------
-    require("showkeys").open()
+    --require("showkeys").open()
     ---------------------------------------------------------------------------
 
     ---------------------------------------------------------------------------
@@ -1078,8 +1078,10 @@ else
     --- FIXME : Check if this is even working
     ---------------------------------------------------------------------------
     local cfg = {
+        bind = true,
+        handler_opts = { border = "rounded" },
         floating_window_off_x = 5, -- adjust float windows x position.
-        floating_window_off_y = function() -- adjust float windows y position. e.g. set to -2 can make floating window move up 2 lines
+        floating_window_off_y = function()
             local linenr = vim.api.nvim_win_get_cursor(0)[1] -- buf line number
             local pumheight = vim.o.pumheight
             local winline = vim.fn.winline() -- line number in the window
@@ -1126,7 +1128,7 @@ else
     -- 'i'   includes: find files that include the filename under cursor
     -- 'd'   called: find functions that function under cursor calls
     vim.keymap.set({ "n", "v" }, "cgs", "<cmd>Cs f s<cr>")
-    vim.keymap.set({ "n", "v" }, "cg]", "<cmd>Cs f g<cr>")
+    vim.keymap.set({ "n", "v" }, "cgg", "<cmd>Cs f g<cr>")
     vim.keymap.set({ "n", "v" }, "cgc", "<cmd>Cs f c<cr>")
     vim.keymap.set({ "n", "v" }, "cgt", "<cmd>Cs f t<cr>")
     vim.keymap.set({ "n", "v" }, "cge", "<cmd>Cs f e<cr>")
@@ -1295,7 +1297,7 @@ else
     ---------------------------------------------------------------------------
     ---- Qucker list using <C-t>
     ---------------------------------------------------------------------------
-    require("trouble").setup { focus = false } -- for default options, refer to the configuration section for custom setup.
+    require("trouble").setup { focus = false }
     local actions = require "telescope.actions"
     local open_with_trouble = require("trouble.sources.telescope").open
 
@@ -1355,8 +1357,8 @@ else
 
     ---------------------------------------------------------------------------
     --- LSP diagnostic list
+    --- global lsp mappings
     ---------------------------------------------------------------------------
-    -- global lsp mappings
     vim.keymap.set("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
     ---------------------------------------------------------------------------
 
@@ -1502,5 +1504,18 @@ else
             ["core.concealer"] = {}, -- We added this line!
         },
     }
+    
     ---------------------------------------------------------------------------
+    --- Neovide font resize
+    ---------------------------------------------------------------------------
+    options = {
+        default_size = 11, -- absolute size it will fallback to when :GUIFontSizeSet is not specified
+        change_by = 1, -- step value that will inc/dec the fontsize by
+        bounds = {
+            maximum = 24, -- maximum font size, when you try to set a size bigger than this it will default to max
+            minimum = 8, -- any modification lower than 8 will spring back to 8
+        },
+    }
+
+    require("gui-font-resize").setup { default_size = 10, change_by = 1, bounds = { maximum = 20 } }
 end
