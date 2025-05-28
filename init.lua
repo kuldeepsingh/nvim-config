@@ -43,7 +43,7 @@ else
     require "mappings"
     ---------------------------------------------------------------------------
     require("java").setup()
-    require("lspconfig").jdtls.setup {}
+    --require("lspconfig").jdtls.setup {}
     ---------------------------------------------------------------------------
     -- Set up nvim-cmp.
     ---------------------------------------------------------------------------
@@ -296,7 +296,7 @@ else
                 ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
             },
             signature = {
-                enabled = true,
+                enabled = false,
             },
         },
         -- you can enable a preset for easier configuration
@@ -993,7 +993,7 @@ else
     ---------------------------------------------------------------------------
     --- Display the key pressed on top right corner
     ---------------------------------------------------------------------------
-    --require("showkeys").open()
+    require("showkeys").open()
     ---------------------------------------------------------------------------
 
     ---------------------------------------------------------------------------
@@ -1099,7 +1099,7 @@ else
             return 0
         end,
     }
-    require("lsp_signature").setup(cfg)
+    --require("lsp_signature").setup(cfg)
     ---------------------------------------------------------------------------
 
     ---------------------------------------------------------------------------
@@ -1504,7 +1504,7 @@ else
             ["core.concealer"] = {}, -- We added this line!
         },
     }
-    
+
     ---------------------------------------------------------------------------
     --- Neovide font resize
     ---------------------------------------------------------------------------
@@ -1518,4 +1518,6 @@ else
     }
 
     require("gui-font-resize").setup { default_size = 10, change_by = 1, bounds = { maximum = 20 } }
+
+    require("wrapping").soft_wrap_mode()
 end

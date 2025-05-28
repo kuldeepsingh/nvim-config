@@ -4,9 +4,9 @@ vim.opt.cursorlineopt = "both" -- to enable cursorline!
 
 -- COLOR SCHEME
 --vim.cmd [[colorscheme nord]]
---vim.cmd [[colorscheme monoglow]]
+vim.cmd [[colorscheme monoglow]]
 --vim.cmd [[colorscheme auto]]
-vim.cmd [[colorscheme coal]]
+--vim.cmd [[colorscheme coal]]
 --vim.cmd "highlight WinSeparator guifg=#ffaa22"
 if vim.g.neovide then
     vim.o.guifont = "Source Code Pro:h18:#h-slight"

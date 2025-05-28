@@ -104,21 +104,21 @@ return {
         event = "BufRead *",
     },
 
-    {
-        "ray-x/lsp_signature.nvim",
-        event = "InsertEnter",
-        opts = {
-            bind = true,
-            handler_opts = {
-                border = "double",
-            },
-            floating_window_off_y = -1,
-            hint_enable = false,
-        },
-        config = function(_, opts)
-            require("lsp_signature").setup(opts)
-        end,
-    },
+    -- {
+    --     "ray-x/lsp_signature.nvim",
+    --     event = "InsertEnter",
+    --     opts = {
+    --         bind = true,
+    --         handler_opts = {
+    --             border = "double",
+    --         },
+    --         floating_window_off_y = -1,
+    --         hint_enable = false,
+    --     },
+    --     config = function(_, opts)
+    --         require("lsp_signature").setup(opts)
+    --     end,
+    -- },
 
     {
         "neovim/nvim-lspconfig",
@@ -132,6 +132,7 @@ return {
 
     {
         "williamboman/mason-lspconfig.nvim",
+        commit = "1a31f82",
         lazy = false,
         dependencies = { "nvim-lspconfig" },
         config = function()
@@ -197,7 +198,7 @@ return {
                     kotlin = { "ktlint" },
                     ruby = { "standardrb" },
                     -- FIXME: Below gives error for the text file on save
-                    --markdown = { { "prettierd", "prettier", stop_after_first = true } },
+                    markdown = { { "prettierd", "prettier", stop_after_first = true } },
                     erb = { "htmlbeautifier" },
                     html = { "htmlbeautifier" },
                     bash = { "beautysh" },
@@ -415,6 +416,7 @@ return {
 
     {
         "williamboman/mason.nvim",
+        commit = "4da89f3",
         dependencies = {
             "WhoIsSethDaniel/mason-tool-installer.nvim",
         },
@@ -618,16 +620,13 @@ return {
     {
         "folke/noice.nvim",
         event = "VeryLazy",
-        opts = {
-            -- add any options here
-        },
         dependencies = {
             -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
             "MunifTanjim/nui.nvim",
             -- OPTIONAL:
             --   `nvim-notify` is only needed, if you want to use the notification view.
             --   If not available, we use `mini` as the fallback
-            "rcarriga/nvim-notify",
+            --"rcarriga/nvim-notify",
         },
     },
 
@@ -1232,5 +1231,12 @@ return {
         "ktunprasert/gui-font-resize.nvim",
         event = "VimEnter",
         config = true,
+    },
+    {
+        "andrewferrier/wrapping.nvim",
+        event = "VimEnter",
+        config = function()
+            require("wrapping").setup()
+        end,
     },
 }
