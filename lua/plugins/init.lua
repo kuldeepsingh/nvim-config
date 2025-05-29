@@ -63,7 +63,7 @@ return {
                 mapping = cmp.mapping.preset.insert {
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                    ["<C-Space>"] = cmp.mapping.complete(),
+                    ["<C-leader>"] = cmp.mapping.complete(),
                     ["<CR>"] = cmp.mapping.confirm {
                         behavior = cmp.ConfirmBehavior.Replace,
                         select = true,
@@ -255,14 +255,14 @@ return {
             require("telescope").load_extension "live_grep_args"
             require("telescope").load_extension "undo"
 
-            vim.keymap.set("n", "<space>fh", require("telescope.builtin").help_tags)
-            vim.keymap.set("n", "<space>fd", require("telescope.builtin").find_files)
-            vim.keymap.set("n", "<space>en", function()
+            vim.keymap.set("n", "<leader>fh", require("telescope.builtin").help_tags)
+            vim.keymap.set("n", "<leader>fd", require("telescope.builtin").find_files)
+            vim.keymap.set("n", "<leader>en", function()
                 require("telescope.builtin").find_files {
                     cwd = vim.fn.stdpath "config",
                 }
             end)
-            vim.keymap.set("n", "<space>ep", function()
+            vim.keymap.set("n", "<leader>ep", function()
                 require("telescope.builtin").find_files {
                     cwd = vim.fs.joinpath(vim.fn.stdpath "data", "lazy"),
                 }
@@ -369,50 +369,50 @@ return {
         end,
     },
 
-    {
-        "yetone/avante.nvim",
-        event = "VeryLazy",
-        lazy = false,
-        version = false, -- set this to "*" if you want to always pull the latest change, false to update on release
-        opts = { provider = "copilot" },
-        -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-        build = "make",
-        -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-        dependencies = {
-            "stevearc/dressing.nvim",
-            "nvim-lua/plenary.nvim",
-            "MunifTanjim/nui.nvim",
-            --- The below dependencies are optional,
-            "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-            "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-            "zbirenbaum/copilot.lua", -- for providers='copilot'
-            {
-                -- support for image pasting
-                "HakonHarnes/img-clip.nvim",
-                event = "VeryLazy",
-                opts = {
-                    -- recommended settings
-                    default = {
-                        embed_image_as_base64 = false,
-                        prompt_for_file_name = false,
-                        drag_and_drop = {
-                            insert_mode = true,
-                        },
-                        -- required for Windows users
-                        use_absolute_path = true,
-                    },
-                },
-            },
-            {
-                -- Make sure to set this up properly if you have lazy=true
-                "MeanderingProgrammer/render-markdown.nvim",
-                opts = {
-                    file_types = { "markdown", "Avante" },
-                },
-                ft = { "markdown", "Avante" },
-            },
-        },
-    },
+    -- {
+    --     "yetone/avante.nvim",
+    --     event = "VeryLazy",
+    --     lazy = false,
+    --     version = false, -- set this to "*" if you want to always pull the latest change, false to update on release
+    --     opts = { provider = "copilot" },
+    --     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    --     build = "make",
+    --     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    --     dependencies = {
+    --         "stevearc/dressing.nvim",
+    --         "nvim-lua/plenary.nvim",
+    --         "MunifTanjim/nui.nvim",
+    --         --- The below dependencies are optional,
+    --         "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+    --         "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+    --         "zbirenbaum/copilot.lua", -- for providers='copilot'
+    --         {
+    --             -- support for image pasting
+    --             "HakonHarnes/img-clip.nvim",
+    --             event = "VeryLazy",
+    --             opts = {
+    --                 -- recommended settings
+    --                 default = {
+    --                     embed_image_as_base64 = false,
+    --                     prompt_for_file_name = false,
+    --                     drag_and_drop = {
+    --                         insert_mode = true,
+    --                     },
+    --                     -- required for Windows users
+    --                     use_absolute_path = true,
+    --                 },
+    --             },
+    --         },
+    --         {
+    --             -- Make sure to set this up properly if you have lazy=true
+    --             "MeanderingProgrammer/render-markdown.nvim",
+    --             opts = {
+    --                 file_types = { "markdown", "Avante" },
+    --             },
+    --             ft = { "markdown", "Avante" },
+    --         },
+    --     },
+    -- },
 
     {
         "williamboman/mason.nvim",
@@ -633,7 +633,7 @@ return {
     {
         "linrongbin16/gentags.nvim",
         opts = {
-            workspace = { ".root", ".git", ".svn", ".hg" },
+            workleader = { ".root", ".git", ".svn", ".hg" },
         },
         config = function()
             require("gentags").setup(opts)
@@ -693,13 +693,13 @@ return {
                     ["core.export.markdown"] = { config = { extensions = "all" } },
                     ["core.summary"] = {},
                     ["core.tangle"] = { config = { report_on_empty = false } },
-                    ["core.dirman"] = { -- Manages Neorg workspaces
+                    ["core.dirman"] = { -- Manages Neorg workleaders
                         config = {
-                            workspaces = {
+                            workleaders = {
                                 notes = "~/notes/notes",
                                 work = "~/notes/work",
                             },
-                            default_workspace = "work",
+                            default_workleader = "work",
                         },
                     },
                 },
@@ -1210,9 +1210,9 @@ return {
                 load = {
                     ["core.defaults"] = {}, -- Loads default behaviour
                     ["core.concealer"] = {}, -- Adds pretty icons to your documents
-                    ["core.dirman"] = { -- Manages Neorg workspaces
+                    ["core.dirman"] = { -- Manages Neorg workleaders
                         config = {
-                            workspaces = {
+                            workleaders = {
                                 notes = "~/neorg-notes",
                             },
                         },
@@ -1238,5 +1238,9 @@ return {
         config = function()
             require("wrapping").setup()
         end,
+    },
+    {
+        -- python jupiter
+        "vigemus/iron.nvim",
     },
 }
